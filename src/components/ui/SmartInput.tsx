@@ -82,7 +82,7 @@ export function SmartInput({
 
   return (
     <div ref={wrapperRef} className="relative">
-      <label className="block text-sm font-medium text-gray-700">
+      <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
         {label}
       </label>
       <input
@@ -94,16 +94,20 @@ export function SmartInput({
         onChange={handleInputChange}
         onFocus={handleFocus}
         onKeyDown={handleKeyDown}
-        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+        className="block w-full px-3 py-2.5 sm:py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
+                   focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 
+                   text-base sm:text-sm text-gray-900 dark:text-gray-100 
+                   placeholder:text-gray-500 dark:placeholder:text-gray-400 
+                   bg-white dark:bg-gray-800 transition-colors"
       />
 
       {showDropdown && (
-        <div className="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+        <div className="absolute z-20 mt-1 w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg overflow-hidden">
           <ul className="max-h-60 overflow-y-auto py-1">
             {filtered.map((item) => (
               <li
                 key={item}
-                className="flex items-center justify-between px-3 py-2 hover:bg-gray-50 cursor-pointer transition group"
+                className="flex items-center justify-between px-3 py-2.5 sm:py-2 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition group"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleSelect(item);
@@ -111,7 +115,7 @@ export function SmartInput({
               >
                 <div className="flex items-center gap-2 min-w-0">
                   <span className="text-gray-400 text-xs shrink-0">🕐</span>
-                  <span className="text-sm text-gray-700 truncate">
+                  <span className="text-sm text-gray-700 dark:text-gray-200 truncate">
                     {highlightMatch(item, query)}
                   </span>
                 </div>

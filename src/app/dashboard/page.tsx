@@ -189,7 +189,7 @@ export default function DashboardPage() {
                   <select
                     value={form.leadCount}
                     onChange={(e) => setForm({ ...form, leadCount: Number(e.target.value) as 10 | 50 | 100 })}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    className="mt-1 block w-full px-3 py-2.5 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-base sm:text-sm text-gray-900 bg-white"
                   >
                     <option value={10}>10 leads (39.000đ)</option>
                     <option value={50}>50 leads (39.000đ)</option>

@@ -116,6 +116,8 @@ model Lead {
   types                   String[]
   rating                  Decimal?  @db.Decimal(3, 2)
   userRatingCount         Int?      @map("user_rating_count")
+  reviewsLink             String?   @map("reviews_link")
+  reviewsPerRating        Json?     @map("reviews_per_rating")
   placeProvider           String?   @map("place_provider")
   painSignals             Json      @default("[]") @map("pain_signals")
   painSummary             String?   @map("pain_summary")
@@ -152,6 +154,8 @@ model PlaceCache {
   types                   String[]
   rating                  Decimal?  @db.Decimal(3, 2)
   userRatingCount         Int?      @map("user_rating_count")
+  reviewsLink             String?   @map("reviews_link")
+  reviewsPerRating        Json?     @map("reviews_per_rating")
   rawData                 Json      @map("raw_data")
   firstSeenAt             DateTime  @default(now()) @map("first_seen_at") @db.Timestamptz(6)
   lastSeenAt              DateTime  @default(now()) @updatedAt @map("last_seen_at") @db.Timestamptz(6)

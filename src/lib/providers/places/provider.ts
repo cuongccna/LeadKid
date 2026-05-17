@@ -13,6 +13,8 @@ export interface PlaceResult {
   types?: string[];
   rating?: number;
   userRatingCount?: number;
+  reviewsLink?: string;
+  reviewsPerRating?: Record<string, number>;
   provider?: string;
 }
 

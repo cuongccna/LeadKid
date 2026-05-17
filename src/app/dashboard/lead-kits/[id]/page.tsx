@@ -25,6 +25,8 @@ interface Lead {
   isFreePreview: boolean;
   rating: string | null;
   userRatingCount: number | null;
+  reviewsLink: string | null;
+  reviewsPerRating: Record<string, number> | null;
   businessStatus: string | null;
 }
 
@@ -83,6 +85,33 @@ function RatingStars({ rating, count }: { rating: string | null; count: number |
     <div className="flex items-center gap-1 text-xs text-amber-600">
       <span>{'⭐'.repeat(stars)}{'☆'.repeat(5 - stars)}</span>
       <span className="text-gray-400">({count ?? 0} đánh giá)</span>
+    </div>
+  );
+}
+
+function RatingDistribution({ data, total }: { data: Record<string, number> | null; total: number | null }) {
+  if (!data || !total || total === 0) return null;
+
+  const levels = [5, 4, 3, 2, 1];
+  const maxCount = Math.max(...levels.map((l) => data[String(l)] || 0));
+
+  return (
+    <div className="space-y-1">
+      {levels.map((level) => {
+        const count = data[String(level)] || 0;
+        const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+        const widthPct = maxCount > 0 ? Math.round((count / maxCount) * 100) : 0;
+        const barColor = level >= 4 ? 'bg-green-400' : level === 3 ? 'bg-yellow-400' : 'bg-red-400';
+        return (
+          <div key={level} className="flex items-center gap-2 text-xs">
+            <span className="w-3 shrink-0 text-gray-500">{level}★</span>
+            <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+              <div className={`h-full ${barColor} rounded-full transition-all`} style={{ width: `${widthPct}%` }} />
+            </div>
+            <span className="w-8 text-right text-gray-400 shrink-0">{pct}%</span>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -337,12 +366,20 @@ export default function LeadKitDetailPage() {
                   no_zalo_chat: 'Chưa có Zalo chat → cơ hội tư vấn',
                   no_booking: 'Chưa có đặt lịch online → cơ hội tích hợp',
                   slow_website: 'Website chậm → cơ hội tối ưu',
+                  high_negative_reviews: 'Nhiều đánh giá xấu → cơ hội cải thiện CSKH',
+                  mixed_reviews: 'Đánh giá trung bình → cơ hội nâng chất lượng',
+                  few_reviews: 'Ít đánh giá → cơ hội xây uy tín',
+                  strong_reputation: 'Uy tín cao → cơ hội mở rộng',
                 };
                 const colors: Record<string, string> = {
                   no_website: 'bg-red-50 text-red-700 border-red-100',
                   no_zalo_chat: 'bg-orange-50 text-orange-700 border-orange-100',
                   no_booking: 'bg-blue-50 text-blue-700 border-blue-100',
                   slow_website: 'bg-yellow-50 text-yellow-700 border-yellow-100',
+                  high_negative_reviews: 'bg-rose-50 text-rose-700 border-rose-100',
+                  mixed_reviews: 'bg-amber-50 text-amber-700 border-amber-100',
+                  few_reviews: 'bg-sky-50 text-sky-700 border-sky-100',
+                  strong_reputation: 'bg-emerald-50 text-emerald-700 border-emerald-100',
                 };
                 return (
                   <span
@@ -381,6 +418,11 @@ export default function LeadKitDetailPage() {
                         {lead.companyName}
                       </h3>
                       <RatingStars rating={lead.rating} count={lead.userRatingCount} />
+                      {lead.reviewsPerRating && (
+                        <div className="mt-1.5">
+                          <RatingDistribution data={lead.reviewsPerRating} total={lead.userRatingCount} />
+                        </div>
+                      )}
                     </div>
                     {lead.isFreePreview && (
                       <span className="shrink-0 text-[10px] font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded-full uppercase tracking-wide">
@@ -460,6 +502,13 @@ export default function LeadKitDetailPage() {
                     </LeadInfoRow>
                   )}
 
+                  {/* Reviews Link */}
+                  {lead.reviewsLink && (
+                    <LeadInfoRow icon="💬" label="Đánh giá" href={lead.reviewsLink}>
+                      <span className="text-indigo-600 hover:underline">Xem {lead.userRatingCount ?? 0} đánh giá →</span>
+                    </LeadInfoRow>
+                  )}
+
                   {/* Pain Summary */}
                   {showData && viewed?.painSummary && (
                     <div className="bg-amber-50 border border-amber-100 rounded-lg p-3">
@@ -518,6 +567,11 @@ export default function LeadKitDetailPage() {
                         {lead.companyName}
                       </h3>
                       <RatingStars rating={lead.rating} count={lead.userRatingCount} />
+                      {lead.reviewsPerRating && (
+                        <div className="mt-1.5">
+                          <RatingDistribution data={lead.reviewsPerRating} total={lead.userRatingCount} />
+                        </div>
+                      )}
                     </div>
                     {lead.isFreePreview && (
                       <span className="shrink-0 text-[10px] font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded-full uppercase">
@@ -569,6 +623,12 @@ export default function LeadKitDetailPage() {
                       <span className="text-indigo-600 hover:underline truncate block">
                         {lead.websiteUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')}
                       </span>
+                    </LeadInfoRow>
+                  )}
+
+                  {lead.reviewsLink && (
+                    <LeadInfoRow icon="💬" label="Đánh giá" href={lead.reviewsLink}>
+                      <span className="text-indigo-600 hover:underline">Xem {lead.userRatingCount ?? 0} đánh giá →</span>
                     </LeadInfoRow>
                   )}
 

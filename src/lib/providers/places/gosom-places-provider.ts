@@ -80,9 +80,23 @@ function parseGosomCsv(csvText: string): PlaceResult[] {
     const address = get('complete_address') || get('address');
     const ratingStr = get('review_rating');
     const reviewCountStr = get('review_count');
+    const reviewsLinkStr = get('reviews_link');
+    const reviewsPerRatingStr = get('reviews_per_rating');
     const latStr = get('latitude');
     const lonStr = get('longitude');
     const status = get('status');
+
+    let reviewsPerRating: Record<string, number> | undefined;
+    if (reviewsPerRatingStr) {
+      try {
+        const parsed = JSON.parse(reviewsPerRatingStr);
+        if (typeof parsed === 'object' && parsed !== null) {
+          reviewsPerRating = parsed;
+        }
+      } catch {
+        // Ignore parse errors
+      }
+    }
 
     results.push({
       placeId,
@@ -94,6 +108,8 @@ function parseGosomCsv(csvText: string): PlaceResult[] {
       googleMapsUri: link,
       rating: ratingStr ? parseFloat(ratingStr) : undefined,
       userRatingCount: reviewCountStr ? parseInt(reviewCountStr, 10) : undefined,
+      reviewsLink: reviewsLinkStr,
+      reviewsPerRating,
       latitude: latStr ? parseFloat(latStr) : undefined,
       longitude: lonStr ? parseFloat(lonStr) : undefined,
       businessStatus: status,

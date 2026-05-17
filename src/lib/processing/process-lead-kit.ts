@@ -4,7 +4,7 @@ import { GooglePlacesProvider } from '@/lib/providers/places/google-places-provi
 import { GosomPlacesProvider } from '@/lib/providers/places/gosom-places-provider';
 import { CompositePlacesProvider } from '@/lib/providers/places/composite-places-provider';
 import type { PlaceResult } from '@/lib/providers/places/provider';
-import { detectPainSignals } from './pain-detector';
+import { detectPainSignals, detectReviewPainSignals } from './pain-detector';
 import { checkWebsiteHealth } from './website-health-check';
 import { extractPhones, extractEmails, extractSocialLinks } from './contact-extractor';
 import { getAIProvider } from '@/lib/ai';
@@ -224,6 +224,8 @@ export async function processLeadKit(jobId: string, leadKitId: string) {
     googleMapsUri: p.googleMapsUri || undefined,
     rating: p.rating ? Number(p.rating) : undefined,
     userRatingCount: p.userRatingCount || undefined,
+    reviewsLink: p.reviewsLink || undefined,
+    reviewsPerRating: (p.reviewsPerRating as Record<string, number>) || undefined,
     latitude: p.latitude ? Number(p.latitude) : undefined,
     longitude: p.longitude ? Number(p.longitude) : undefined,
     businessStatus: p.businessStatus || undefined,
@@ -314,14 +316,30 @@ export async function processLeadKit(jobId: string, leadKitId: string) {
       loadTime,
     });
 
+    // --- Review-based Pain Detection ---
+    const reviewPain = detectReviewPainSignals(
+      place.reviewsPerRating,
+      place.userRatingCount,
+      place.rating
+    );
+
+    // Combine pain summaries
+    let combinedPainSummary = pain.summary;
+    if (reviewPain) {
+      combinedPainSummary = reviewPain.summary;
+    }
+
     // --- Generate AI Script ---
     let scriptText: string | null = null;
     try {
       scriptText = await aiProvider.generateScript({
         companyName: place.displayName,
-        painSummary: pain.summary,
+        painSummary: combinedPainSummary,
         serviceName: kit.serviceName,
         industry: kit.targetIndustry,
+        reviewInsight: reviewPain?.pitchAngle || null,
+        rating: place.rating,
+        userRatingCount: place.userRatingCount,
       });
     } catch {
       scriptText = `Chào anh/chị ${place.displayName}, em có gợi ý nhỏ giúp tiệm kinh doanh tốt hơn ạ.`;
@@ -346,6 +364,8 @@ export async function processLeadKit(jobId: string, leadKitId: string) {
         types: place.types || [],
         rating: place.rating ? String(place.rating) : null,
         userRatingCount: place.userRatingCount,
+        reviewsLink: place.reviewsLink,
+        reviewsPerRating: place.reviewsPerRating as Prisma.InputJsonValue,
         lastSeenAt: new Date(),
         expiresAt,
       },
@@ -365,11 +385,13 @@ export async function processLeadKit(jobId: string, leadKitId: string) {
         types: place.types || [],
         rating: place.rating ? String(place.rating) : null,
         userRatingCount: place.userRatingCount,
+        reviewsLink: place.reviewsLink,
+        reviewsPerRating: place.reviewsPerRating as Prisma.InputJsonValue,
         rawData: place as unknown as Prisma.InputJsonValue,
         firstSeenAt: new Date(),
         lastSeenAt: new Date(),
         expiresAt,
-      },
+      }
     });
 
     // --- Create Lead ---
@@ -389,6 +411,8 @@ export async function processLeadKit(jobId: string, leadKitId: string) {
         types: place.types || [],
         rating: place.rating ? String(place.rating) : null,
         userRatingCount: place.userRatingCount,
+        reviewsLink: place.reviewsLink,
+        reviewsPerRating: place.reviewsPerRating as Prisma.InputJsonValue,
         placeProvider: place.provider || 'unknown',
         painSignals: pain.signals,
         painSummary: pain.summary,

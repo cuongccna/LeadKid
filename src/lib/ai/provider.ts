@@ -3,6 +3,9 @@ export interface AIScriptParams {
   painSummary: string | null;
   serviceName: string;
   industry: string;
+  reviewInsight?: string | null;
+  rating?: number | null;
+  userRatingCount?: number | null;
 }
 
 export interface AIProvider {

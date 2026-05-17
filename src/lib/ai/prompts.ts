@@ -6,6 +6,7 @@ Nhiệm vụ: Viết 1 câu mở đầu Zalo duy nhất (TỐI ĐA 120 ký tự)
 Thông tin pain signal: {{pain_summary}}
 Dịch vụ đang bán: {{service_name}}
 Ngành: {{industry}}
+{{review_section}}
 
 QUY TẮC TUYỆT ĐỐI:
 1. Khen trước, không chỉ trích
@@ -31,11 +32,22 @@ export function buildPrompt(params: {
   painSummary: string | null;
   serviceName: string;
   industry: string;
+  reviewInsight?: string | null;
+  rating?: number | null;
+  userRatingCount?: number | null;
 }): string {
+  let reviewSection = '';
+  if (params.reviewInsight) {
+    reviewSection = `\nThông tin đánh giá Google Maps: ${params.reviewInsight}`;
+    if (params.rating && params.userRatingCount) {
+      reviewSection += ` (${params.rating}★ / ${params.userRatingCount} đánh giá)`;
+    }
+  }
+
   return SCRIPT_PROMPT_TEMPLATE
     .replace(/\{\{company_name\}\}/g, params.companyName)
     .replace(/\{\{company\}\}/g, params.companyName)
     .replace(/\{\{pain_summary\}\}/g, params.painSummary || 'chưa có thông tin cụ thể')
     .replace(/\{\{service_name\}\}/g, params.serviceName)
-    .replace(/\{\{industry\}\}/g, params.industry);
+    .replace(/\{\{review_section\}\}/g, reviewSection);
 }

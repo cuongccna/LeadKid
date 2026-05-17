@@ -73,8 +73,9 @@ export default function SignupPage() {
                 type="text"
                 required
                 value={form.fullName}
+                placeholder="Nguyễn Văn A"
                 onChange={(e) => setForm({ ...form, fullName: e.target.value })}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full px-3 py-2.5 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-base sm:text-sm text-gray-900 placeholder:text-gray-500 bg-white"
               />
             </div>
             <div>
@@ -87,8 +88,9 @@ export default function SignupPage() {
                 type="email"
                 required
                 value={form.email}
+                placeholder="your@email.com"
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full px-3 py-2.5 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-base sm:text-sm text-gray-900 placeholder:text-gray-500 bg-white"
               />
             </div>
             <div>
@@ -101,8 +103,9 @@ export default function SignupPage() {
                 type="password"
                 required
                 value={form.password}
+                placeholder="••••••••"
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full px-3 py-2.5 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-base sm:text-sm text-gray-900 placeholder:text-gray-500 bg-white"
               />
             </div>
             <div>
@@ -114,8 +117,9 @@ export default function SignupPage() {
                 name="companyName"
                 type="text"
                 value={form.companyName}
+                placeholder="Công ty TNHH ABC"
                 onChange={(e) => setForm({ ...form, companyName: e.target.value })}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full px-3 py-2.5 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-base sm:text-sm text-gray-900 placeholder:text-gray-500 bg-white"
               />
             </div>
             <div className="flex items-start">
