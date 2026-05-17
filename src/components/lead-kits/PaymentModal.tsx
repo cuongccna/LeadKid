@@ -40,7 +40,7 @@ export function PaymentModal({
       <div className="bg-white rounded-lg max-w-md w-full p-6">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold">Thanh toán để mở khóa</h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
             ✕
           </button>
         </div>
@@ -48,7 +48,7 @@ export function PaymentModal({
         <div className="space-y-4">
           <div className="text-center">
             <p className="text-2xl font-bold text-indigo-600">{formattedAmount}đ</p>
-            <p className="text-sm text-gray-500 mt-1">Quét mã QR để thanh toán</p>
+            <p className="text-sm text-gray-600 mt-1">Quét mã QR để thanh toán</p>
           </div>
 
           <div className="flex justify-center">
@@ -62,19 +62,19 @@ export function PaymentModal({
 
           <div className="bg-gray-50 rounded-lg p-4 space-y-2 text-sm">
             <div className="flex justify-between">
-              <span className="text-gray-500">Ngân hàng:</span>
+              <span className="text-gray-600">Ngân hàng:</span>
               <span className="font-medium">{bankCode || 'Vietcombank'}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-500">Số tài khoản:</span>
+              <span className="text-gray-600">Số tài khoản:</span>
               <span className="font-medium">{bankAccount || '---'}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-500">Chủ tài khoản:</span>
+              <span className="text-gray-600">Chủ tài khoản:</span>
               <span className="font-medium">{accountName || '---'}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-500">Nội dung CK:</span>
+              <span className="text-gray-600">Nội dung CK:</span>
               <span className="font-medium text-indigo-600">{paymentCode}</span>
             </div>
           </div>
@@ -87,7 +87,7 @@ export function PaymentModal({
             {checking ? 'Đang kiểm tra...' : 'Tôi đã thanh toán'}
           </button>
 
-          <p className="text-xs text-gray-500 text-center">
+          <p className="text-xs text-gray-600 text-center">
             Vui lòng ghi đúng nội dung chuyển khoản để hệ thống tự động xác nhận.
           </p>
         </div>

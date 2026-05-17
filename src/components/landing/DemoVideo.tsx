@@ -6,7 +6,7 @@ export function DemoVideo() {
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
             Xem LeadKit hoạt động
           </h2>
-          <p className="mt-6 text-lg leading-8 text-gray-600">
+          <p className="mt-6 text-lg leading-8 text-gray-700">
             Từ tìm kiếm đến liên hệ — chỉ trong 3 bước đơn giản.
           </p>
         </div>
@@ -21,7 +21,7 @@ export function DemoVideo() {
                   </svg>
                 </div>
                 <p className="text-lg font-medium">Demo Video</p>
-                <p className="text-sm text-gray-400 mt-1">60 giây · Coming soon</p>
+                <p className="text-sm text-gray-500 mt-1">60 giây · Coming soon</p>
               </div>
             </div>
             {/* Step indicators */}

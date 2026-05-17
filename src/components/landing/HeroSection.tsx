@@ -18,7 +18,7 @@ export function HeroSection() {
             Tìm doanh nghiệp đang{' '}
             <span className="text-indigo-600">bỏ lỡ tiền</span>
           </h1>
-          <p className="mt-6 text-lg leading-8 text-gray-600">
+          <p className="mt-6 text-lg leading-8 text-gray-700">
             LeadKit AI giúp bạn tìm khách hàng tiềm năng có nhu cầu thực sự — và biết chính xác nên nói gì khi liên hệ.
           </p>
           <div className="mt-10 flex items-center justify-center gap-x-6">
@@ -35,7 +35,7 @@ export function HeroSection() {
               Đăng nhập
             </Link>
           </div>
-          <p className="mt-4 text-xs text-gray-500">Không cần thẻ tín dụng · 5 leads miễn phí mỗi ngày</p>
+          <p className="mt-4 text-xs text-gray-600">Không cần thẻ tín dụng · 5 leads miễn phí mỗi ngày</p>
         </div>
       </div>
     </div>

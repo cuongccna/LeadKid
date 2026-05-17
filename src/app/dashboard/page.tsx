@@ -123,10 +123,10 @@ export default function DashboardPage() {
           <div className="flex justify-between h-16 items-center">
             <h1 className="text-xl font-bold text-gray-900">LeadKit AI</h1>
             <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">{session?.user?.name || session?.user?.email}</span>
+              <span className="text-sm text-gray-700">{session?.user?.name || session?.user?.email}</span>
               {usage && (
                 <span className={`text-xs px-2 py-1 rounded-full ${
-                  isPro ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-600'
+                  isPro ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-700'
                 }`}>
                   {isPro ? 'Pro' : 'Free'}
                 </span>
@@ -212,7 +212,7 @@ export default function DashboardPage() {
             <div className="bg-white shadow rounded-lg p-6">
               <h2 className="text-lg font-semibold mb-4">Lead Kits của bạn</h2>
               {kits.length === 0 ? (
-                <p className="text-gray-500">Chưa có lead kit nào. Tạo kit đầu tiên!</p>
+                <p className="text-gray-600">Chưa có lead kit nào. Tạo kit đầu tiên!</p>
               ) : (
                 <div className="space-y-4">
                   {kits.map((kit) => (
@@ -224,7 +224,7 @@ export default function DashboardPage() {
                       <div className="flex justify-between items-start">
                         <div>
                           <h3 className="font-medium text-gray-900">{kit.title}</h3>
-                          <p className="text-sm text-gray-500 mt-1">
+                          <p className="text-sm text-gray-600 mt-1">
                             {kit.serviceName} · {kit.targetIndustry} · {kit.targetLocation}
                           </p>
                           <div className="flex items-center gap-4 mt-2 text-sm">
@@ -243,7 +243,7 @@ export default function DashboardPage() {
                                 ? 'Đang xử lý'
                                 : 'Chờ xử lý'}
                             </span>
-                            <span className="text-gray-500">{kit._count.leads} leads</span>
+                            <span className="text-gray-600">{kit._count.leads} leads</span>
                             {kit.unlockStatus === 'unlocked' ? (
                               <span className="text-green-600 text-xs">✓ Đã mở khóa</span>
                             ) : (
@@ -251,7 +251,7 @@ export default function DashboardPage() {
                             )}
                           </div>
                         </div>
-                        <span className="text-xs text-gray-400">
+                        <span className="text-xs text-gray-500">
                           {new Date(kit.createdAt).toLocaleDateString('vi-VN')}
                         </span>
                       </div>

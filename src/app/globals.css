@@ -28,26 +28,26 @@ body {
 
 /* Default placeholder color - ensure visibility */
 ::placeholder {
-  color: #6b7280;
+  color: #4b5563;
   opacity: 1;
   font-weight: 400;
 }
 
 /* Webkit browsers (Chrome, Safari, Edge) */
 ::-webkit-input-placeholder {
-  color: #6b7280;
+  color: #4b5563;
   opacity: 1;
 }
 
 /* Firefox */
 ::-moz-placeholder {
-  color: #6b7280;
+  color: #4b5563;
   opacity: 1;
 }
 
 /* MS Edge/IE */
 :-ms-input-placeholder {
-  color: #6b7280;
+  color: #4b5563;
   opacity: 1;
 }
 

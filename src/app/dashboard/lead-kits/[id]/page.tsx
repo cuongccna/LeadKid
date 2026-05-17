@@ -84,7 +84,7 @@ function RatingStars({ rating, count }: { rating: string | null; count: number |
   return (
     <div className="flex items-center gap-1 text-xs text-amber-600">
       <span>{'⭐'.repeat(stars)}{'☆'.repeat(5 - stars)}</span>
-      <span className="text-gray-400">({count ?? 0} đánh giá)</span>
+      <span className="text-gray-500">({count ?? 0} đánh giá)</span>
     </div>
   );
 }
@@ -104,11 +104,11 @@ function RatingDistribution({ data, total }: { data: Record<string, number> | nu
         const barColor = level >= 4 ? 'bg-green-400' : level === 3 ? 'bg-yellow-400' : 'bg-red-400';
         return (
           <div key={level} className="flex items-center gap-2 text-xs">
-            <span className="w-3 shrink-0 text-gray-500">{level}★</span>
+            <span className="w-3 shrink-0 text-gray-600">{level}★</span>
             <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
               <div className={`h-full ${barColor} rounded-full transition-all`} style={{ width: `${widthPct}%` }} />
             </div>
-            <span className="w-8 text-right text-gray-400 shrink-0">{pct}%</span>
+            <span className="w-8 text-right text-gray-500 shrink-0">{pct}%</span>
           </div>
         );
       })}
@@ -128,7 +128,7 @@ function LeadInfoRow({ icon, label, children, href }: {
     <div className="flex items-start gap-2">
       <span className="text-base mt-0.5 shrink-0">{icon}</span>
       <div className="min-w-0">
-        <p className="text-[11px] font-medium text-gray-400 uppercase tracking-wider">{label}</p>
+        <p className="text-[11px] font-medium text-gray-600 uppercase tracking-wider">{label}</p>
         <div className="text-sm text-gray-700 mt-0.5">{children}</div>
       </div>
     </div>
@@ -274,7 +274,7 @@ export default function LeadKitDetailPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto mb-3" />
-          <p className="text-gray-500 text-sm">Đang tải dữ liệu leads...</p>
+          <p className="text-gray-600 text-sm">Đang tải dữ liệu leads...</p>
         </div>
       </div>
     );
@@ -284,8 +284,8 @@ export default function LeadKitDetailPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-gray-400 text-4xl mb-2">🔍</p>
-          <p className="text-gray-500">Không tìm thấy Lead Kit</p>
+          <p className="text-gray-500 text-4xl mb-2">🔍</p>
+          <p className="text-gray-600">Không tìm thấy Lead Kit</p>
           <Link href="/dashboard" className="text-indigo-600 text-sm mt-2 inline-block hover:underline">
             ← Quay lại Dashboard
           </Link>
@@ -305,7 +305,7 @@ export default function LeadKitDetailPage() {
             <div className="flex items-center gap-3 min-w-0">
               <Link
                 href="/dashboard"
-                className="shrink-0 text-gray-400 hover:text-gray-600 transition p-1 rounded-lg hover:bg-gray-100"
+                className="shrink-0 text-gray-500 hover:text-gray-700 transition p-1 rounded-lg hover:bg-gray-100"
                 title="Quay lại"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -314,7 +314,7 @@ export default function LeadKitDetailPage() {
               </Link>
               <div className="min-w-0">
                 <h1 className="text-lg font-bold text-gray-900 truncate">{kit.title}</h1>
-                <div className="flex items-center gap-2 text-xs text-gray-500">
+                <div className="flex items-center gap-2 text-xs text-gray-600">
                   <span className={`inline-flex px-1.5 py-0.5 rounded-full font-medium ${
                     kit.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
                   }`}>
@@ -460,14 +460,14 @@ export default function LeadKitDetailPage() {
                           {viewed.phone}
                         </a>
                       ) : (
-                        <span className="text-gray-400 italic">Không có số điện thoại</span>
+                        <span className="text-gray-500 italic">Không có số điện thoại</span>
                       )}
                     </LeadInfoRow>
                   ) : (
                     <div className="flex items-start gap-2">
                       <span className="text-base mt-0.5 shrink-0">📱</span>
                       <div>
-                        <p className="text-[11px] font-medium text-gray-400 uppercase tracking-wider">Số điện thoại</p>
+                        <p className="text-[11px] font-medium text-gray-600 uppercase tracking-wider">Số điện thoại</p>
                         <button
                           onClick={() => handleViewLead(lead.id)}
                           className="text-sm text-indigo-600 font-medium mt-0.5 inline-flex items-center gap-1"
@@ -600,14 +600,14 @@ export default function LeadKitDetailPage() {
                           {viewed.phone}
                         </a>
                       ) : (
-                        <span className="text-gray-400 italic">Không có số điện thoại</span>
+                        <span className="text-gray-500 italic">Không có số điện thoại</span>
                       )}
                     </LeadInfoRow>
                   ) : (
                     <div className="flex items-start gap-2">
                       <span className="text-base mt-0.5 shrink-0">📱</span>
                       <div>
-                        <p className="text-[11px] font-medium text-gray-400 uppercase tracking-wider">Số điện thoại</p>
+                        <p className="text-[11px] font-medium text-gray-600 uppercase tracking-wider">Số điện thoại</p>
                         <button
                           onClick={() => handleViewLead(lead.id)}
                           className="text-sm text-indigo-600 font-medium mt-0.5 inline-flex items-center gap-1 hover:underline"

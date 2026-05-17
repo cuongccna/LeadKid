@@ -14,7 +14,7 @@ export default function AcceptableUsePage() {
 
         <div className="prose prose-indigo max-w-none">
           <h2 className="text-xl font-semibold mt-8 mb-4">Hoạt động được phép ✓</h2>
-          <ul className="list-disc list-inside text-gray-600 mb-4 space-y-2">
+          <ul className="list-disc list-inside text-gray-700 mb-4 space-y-2">
             <li>Tìm kiếm leads cho dịch vụ của bạn (web design, SEO, marketing...)</li>
             <li>Liên hệ doanh nghiệp với lý do chính đáng và cách tiếp cận chuyên nghiệp</li>
             <li>Export dữ liệu đã mua cho mục đích cá nhân hoặc nội bộ công ty</li>
@@ -22,7 +22,7 @@ export default function AcceptableUsePage() {
           </ul>
 
           <h2 className="text-xl font-semibold mt-8 mb-4">Hoạt động bị cấm ✗</h2>
-          <ul className="list-disc list-inside text-gray-600 mb-4 space-y-2">
+          <ul className="list-disc list-inside text-gray-700 mb-4 space-y-2">
             <li>Quấy rối, đe dọa, hoặc gửi tin nhắn rác đến doanh nghiệp</li>
             <li>Bán lại dữ liệu leads nguyên bản cho bên thứ ba</li>
             <li>Sử dụng bot hoặc automation để thu thập dữ liệu từ LeadKit</li>
@@ -31,13 +31,13 @@ export default function AcceptableUsePage() {
           </ul>
 
           <h2 className="text-xl font-semibold mt-8 mb-4">Hậu quả vi phạm</h2>
-          <p className="text-gray-600 mb-4">
+          <p className="text-gray-700 mb-4">
             Vi phạm chính sách này có thể dẫn đến khóa tài khoản vĩnh viễn, mất quyền truy cập
             dữ liệu đã mua, và trong trường hợp nghiêm trọng, chuyển giao cho cơ quan chức năng.
           </p>
 
           <h2 className="text-xl font-semibold mt-8 mb-4">Báo cáo vi phạm</h2>
-          <p className="text-gray-600 mb-4">
+          <p className="text-gray-700 mb-4">
             Nếu bạn phát hiện ngưởi dùng khác vi phạm chính sách, vui lòng báo cáo qua email
             support@leadkit.vn.
           </p>

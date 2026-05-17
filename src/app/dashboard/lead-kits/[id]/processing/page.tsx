@@ -55,7 +55,7 @@ export default function ProcessingPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="max-w-md w-full text-center">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Đang xử lý...</h2>
-        <p className="text-gray-500 mb-8">{job?.currentStep || 'Khởi tạo...'}</p>
+        <p className="text-gray-600 mb-8">{job?.currentStep || 'Khởi tạo...'}</p>
 
         <div className="w-full bg-gray-200 rounded-full h-4 mb-4">
           <div
@@ -63,7 +63,7 @@ export default function ProcessingPage() {
             style={{ width: `${progress}%` }}
           />
         </div>
-        <p className="text-sm text-gray-500">{progress}%</p>
+        <p className="text-sm text-gray-600">{progress}%</p>
 
         {error && (
           <p className="mt-4 text-red-600 text-sm">{error}</p>

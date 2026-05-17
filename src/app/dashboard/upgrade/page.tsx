@@ -70,7 +70,7 @@ export default function UpgradePage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto mb-3" />
-          <p className="text-gray-500 text-sm">Đang tải...</p>
+          <p className="text-gray-600 text-sm">Đang tải...</p>
         </div>
       </div>
     );
@@ -84,7 +84,7 @@ export default function UpgradePage() {
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 max-w-md w-full text-center">
           <div className="text-5xl mb-4">✨</div>
           <h1 className="text-xl font-bold text-gray-900 mb-2">Bạn đã là Pro!</h1>
-          <p className="text-gray-500 mb-6">Tài khoản của bạn đang sử dụng gói Pro. Tận hưởng tất cả tính năng cao cấp.</p>
+          <p className="text-gray-600 mb-6">Tài khoản của bạn đang sử dụng gói Pro. Tận hưởng tất cả tính năng cao cấp.</p>
           <Link
             href="/dashboard"
             className="inline-block px-6 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition"
@@ -101,7 +101,7 @@ export default function UpgradePage() {
       <nav className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
-            <Link href="/dashboard" className="text-gray-600 hover:text-gray-900 flex items-center gap-1 text-sm">
+            <Link href="/dashboard" className="text-gray-700 hover:text-gray-900 flex items-center gap-1 text-sm">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
@@ -119,8 +119,8 @@ export default function UpgradePage() {
             {/* Free Plan */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 opacity-70">
               <h2 className="text-lg font-semibold text-gray-700 mb-2">Gói Free</h2>
-              <p className="text-3xl font-bold text-gray-900 mb-4">0đ<span className="text-sm font-normal text-gray-500">/tháng</span></p>
-              <ul className="space-y-3 text-sm text-gray-600">
+              <p className="text-3xl font-bold text-gray-900 mb-4">0đ<span className="text-sm font-normal text-gray-600">/tháng</span></p>
+              <ul className="space-y-3 text-sm text-gray-700">
                 <li className="flex items-center gap-2">✓ 5 leads miễn phí/ngày</li>
                 <li className="flex items-center gap-2">✓ 1 kit/ngày</li>
                 <li className="flex items-center gap-2">✗ Không có AI viết lợi chào</li>
@@ -128,7 +128,7 @@ export default function UpgradePage() {
                 <li className="flex items-center gap-2">✗ Không tạo lại script AI</li>
               </ul>
               <div className="mt-6">
-                <span className="block w-full text-center py-2 px-4 border border-gray-200 rounded-lg text-sm font-medium text-gray-500 bg-gray-50">
+                <span className="block w-full text-center py-2 px-4 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 bg-gray-50">
                   Đang sử dụng
                 </span>
               </div>
@@ -141,9 +141,9 @@ export default function UpgradePage() {
               </div>
               <h2 className="text-lg font-semibold text-indigo-700 mb-2">Gói Pro</h2>
               <p className="text-3xl font-bold text-gray-900 mb-4">
-                149.000đ<span className="text-sm font-normal text-gray-500">/tháng</span>
+                149.000đ<span className="text-sm font-normal text-gray-600">/tháng</span>
               </p>
-              <ul className="space-y-3 text-sm text-gray-600">
+              <ul className="space-y-3 text-sm text-gray-700">
                 <li className="flex items-center gap-2">✓ 500 leads/ngày</li>
                 <li className="flex items-center gap-2">✓ Tạo kit không giới hạn</li>
                 <li className="flex items-center gap-2">✓ AI viết lợi chào cho từng lead</li>
@@ -167,7 +167,7 @@ export default function UpgradePage() {
               <p className="text-3xl font-bold text-indigo-600">
                 {new Intl.NumberFormat('vi-VN').format(payment.amountVnd)}đ
               </p>
-              <p className="text-sm text-gray-500 mt-1">Quét mã QR hoặc chuyển khoản theo thông tin bên dưới</p>
+              <p className="text-sm text-gray-600 mt-1">Quét mã QR hoặc chuyển khoản theo thông tin bên dưới</p>
             </div>
 
             <div className="flex justify-center mb-6">
@@ -181,25 +181,25 @@ export default function UpgradePage() {
 
             <div className="bg-gray-50 rounded-lg p-4 space-y-2 text-sm mb-6">
               <div className="flex justify-between">
-                <span className="text-gray-500">Ngân hàng:</span>
+                <span className="text-gray-600">Ngân hàng:</span>
                 <span className="font-medium">{payment.bankCode || 'Vietcombank'}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Số tài khoản:</span>
+                <span className="text-gray-600">Số tài khoản:</span>
                 <span className="font-medium">{payment.bankAccount || '---'}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Chủ tài khoản:</span>
+                <span className="text-gray-600">Chủ tài khoản:</span>
                 <span className="font-medium">{payment.accountName || '---'}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Số tiền:</span>
+                <span className="text-gray-600">Số tiền:</span>
                 <span className="font-medium text-indigo-600">
                   {new Intl.NumberFormat('vi-VN').format(payment.amountVnd)}đ
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Nội dung CK:</span>
+                <span className="text-gray-600">Nội dung CK:</span>
                 <span className="font-medium text-indigo-600 select-all">{payment.transferContent}</span>
               </div>
             </div>
@@ -214,13 +214,13 @@ export default function UpgradePage() {
               </button>
               <button
                 onClick={() => setPayment(null)}
-                className="w-full py-2 px-4 border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50 transition"
+                className="w-full py-2 px-4 border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition"
               >
                 Quay lại chọn gói
               </button>
             </div>
 
-            <p className="text-xs text-gray-500 text-center mt-4">
+            <p className="text-xs text-gray-600 text-center mt-4">
               Vui lòng ghi đúng nội dung chuyển khoản để hệ thống tự động xác nhận.
               Thanh toán có hiệu lực trong 24 giờ.
             </p>

@@ -145,14 +145,14 @@ export default function HomePage() {
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
               <div className="text-center md:text-left">
                 <p className="text-sm font-semibold text-gray-900">LeadKit AI</p>
-                <p className="text-xs text-gray-500 mt-1">Vietnam SME Lead Intelligence Kit</p>
+                <p className="text-xs text-gray-600 mt-1">Vietnam SME Lead Intelligence Kit</p>
               </div>
-              <div className="flex gap-6 text-sm text-gray-500">
+              <div className="flex gap-6 text-sm text-gray-600">
                 <a href="/privacy" className="hover:text-gray-900">Chính sách riêng tư</a>
                 <a href="/terms" className="hover:text-gray-900">Điều khoản</a>
                 <a href="/acceptable-use" className="hover:text-gray-900">Sử dụng hợp lệ</a>
               </div>
-              <p className="text-xs text-gray-400">© 2024 LeadKit AI. Sử dụng hợp pháp, không spam.</p>
+              <p className="text-xs text-gray-500">© 2024 LeadKit AI. Sử dụng hợp pháp, không spam.</p>
             </div>
           </div>
         </footer>

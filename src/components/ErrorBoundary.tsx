@@ -33,7 +33,7 @@ export class ErrorBoundary extends Component<Props, State> {
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 max-w-md w-full text-center">
             <div className="text-5xl mb-4">😵</div>
             <h1 className="text-xl font-bold text-gray-900 mb-2">Đã xảy ra lỗi</h1>
-            <p className="text-gray-500 mb-6">
+            <p className="text-gray-600 mb-6">
               Rất tiếc, ứng dụng gặp sự cố. Vui lòng tải lại trang hoặc quay về trang chủ.
             </p>
             <div className="flex gap-3 justify-center">

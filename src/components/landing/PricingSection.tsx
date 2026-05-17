@@ -62,20 +62,20 @@ export function PricingSection() {
               <h3 className={`text-lg font-semibold ${plan.highlighted ? 'text-white' : 'text-gray-900'}`}>
                 {plan.name}
               </h3>
-              <p className={`mt-4 text-sm ${plan.highlighted ? 'text-indigo-100' : 'text-gray-600'}`}>
+              <p className={`mt-4 text-sm ${plan.highlighted ? 'text-indigo-100' : 'text-gray-700'}`}>
                 {plan.description}
               </p>
               <p className="mt-6 flex items-baseline gap-x-1">
                 <span className={`text-4xl font-bold tracking-tight ${plan.highlighted ? 'text-white' : 'text-gray-900'}`}>
                   {plan.price}
                 </span>
-                <span className={`text-sm font-semibold ${plan.highlighted ? 'text-indigo-200' : 'text-gray-600'}`}>
+                <span className={`text-sm font-semibold ${plan.highlighted ? 'text-indigo-200' : 'text-gray-700'}`}>
                   {plan.period}
                 </span>
               </p>
               <ul className="mt-8 space-y-3 text-sm">
                 {plan.features.map((feature) => (
-                  <li key={feature} className={`flex gap-x-3 ${plan.highlighted ? 'text-indigo-100' : 'text-gray-600'}`}>
+                  <li key={feature} className={`flex gap-x-3 ${plan.highlighted ? 'text-indigo-100' : 'text-gray-700'}`}>
                     <span className={plan.highlighted ? 'text-indigo-300' : 'text-indigo-600'}>✓</span>
                     {feature}
                   </li>

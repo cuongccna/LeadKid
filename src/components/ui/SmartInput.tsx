@@ -114,7 +114,7 @@ export function SmartInput({
                 }}
               >
                 <div className="flex items-center gap-2 min-w-0">
-                  <span className="text-gray-400 text-xs shrink-0">🕐</span>
+                  <span className="text-gray-500 text-xs shrink-0">🕐</span>
                   <span className="text-sm text-gray-700 dark:text-gray-200 truncate">
                     {highlightMatch(item, query)}
                   </span>
@@ -125,7 +125,7 @@ export function SmartInput({
                     e.stopPropagation();
                     onRemoveHistory(item);
                   }}
-                  className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition px-1.5 py-0.5 rounded hover:bg-red-50 shrink-0"
+                  className="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-red-500 transition px-1.5 py-0.5 rounded hover:bg-red-50 shrink-0"
                   title="Xóa khỏi lịch sử"
                 >
                   ×
@@ -134,7 +134,7 @@ export function SmartInput({
             ))}
           </ul>
           {filtered.length === 0 && query && (
-            <div className="px-3 py-2 text-xs text-gray-400 italic">
+            <div className="px-3 py-2 text-xs text-gray-500 italic">
               Không có gợi ý phù hợp
             </div>
           )}
