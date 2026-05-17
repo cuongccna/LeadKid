@@ -68,9 +68,23 @@ services:
     restart: unless-stopped
     networks:
       - leadkit-network
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: leadkid_user
+      POSTGRES_PASSWORD: Cuongnv123456
+      POSTGRES_DB: leadkid_db
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - leadkit-network
 
 volumes:
   gosom-data:
+  postgres-data:
 
 networks:
   leadkit-network:
