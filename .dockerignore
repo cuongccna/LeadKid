@@ -12,5 +12,4 @@ coverage
 .DS_Store
 *.log
 /tmp
-.gosom/*.png
-.gosom/gosom
+gosom/

@@ -67,3 +67,4 @@ scripts/test-ratelimit.ts
 LeadKid_AI_plan.md
 leadkit_ai_final_implementation_blueprint_v1_2_postgresql_self_hosted.md
 LOCAL_DEVELOPMENT_GUIDE.md
+.env.example
