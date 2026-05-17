@@ -12,18 +12,17 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3002
-      - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_URL=postgresql://leadkid_user:Cuongnv123456@postgres:5432/leadkid_db
       - REDIS_URL=redis://redis:6379
       - GOSOM_API_URL=http://gosom:8080
       - APP_URL=https://slm.io.vn
     depends_on:
+      - postgres
       - redis
       - gosom
     restart: unless-stopped
     networks:
       - leadkit-network
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
 
   worker:
     build:
@@ -34,19 +33,32 @@ services:
       - .env
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_URL=postgresql://leadkid_user:Cuongnv123456@postgres:5432/leadkid_db
       - REDIS_URL=redis://redis:6379
       - GOSOM_API_URL=http://gosom:8080
       - WORKER_POLL_INTERVAL_MS=5000
       - JOB_LEASE_MINUTES=10
     depends_on:
+      - postgres
       - redis
       - gosom
     restart: unless-stopped
     networks:
       - leadkit-network
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: leadkid_user
+      POSTGRES_PASSWORD: Cuongnv123456
+      POSTGRES_DB: leadkid_db
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - leadkit-network
 
   redis:
     image: redis:7-alpine
@@ -68,23 +80,10 @@ services:
     restart: unless-stopped
     networks:
       - leadkit-network
-  postgres:
-    image: postgres:16-alpine
-    ports:
-      - "5433:5432"
-    environment:
-      POSTGRES_USER: leadkid_user
-      POSTGRES_PASSWORD: Cuongnv123456
-      POSTGRES_DB: leadkid_db
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-    restart: unless-stopped
-    networks:
-      - leadkit-network
 
 volumes:
-  gosom-data:
   postgres-data:
+  gosom-data:
 
 networks:
   leadkit-network:
