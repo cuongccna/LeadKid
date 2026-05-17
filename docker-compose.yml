@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3002"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - PORT=3002
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=redis://redis:6379
+      - GOSOM_API_URL=http://gosom:8080
+      - APP_URL=https://slm.io.vn
+    depends_on:
+      - redis
+      - gosom
+    restart: unless-stopped
+    networks:
+      - leadkit-network
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["npm", "run", "worker"]
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=redis://redis:6379
+      - GOSOM_API_URL=http://gosom:8080
+      - WORKER_POLL_INTERVAL_MS=5000
+      - JOB_LEASE_MINUTES=10
+    depends_on:
+      - redis
+      - gosom
+    restart: unless-stopped
+    networks:
+      - leadkit-network
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    networks:
+      - leadkit-network
+
+  gosom:
+    build:
+      context: ./gosom
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - gosom-data:/gmapsdata
+    command: ["-web", "-addr", ":8080", "-data-folder", "/gmapsdata"]
+    restart: unless-stopped
+    networks:
+      - leadkit-network
+
+volumes:
+  gosom-data:
+
+networks:
+  leadkit-network:
+    driver: bridge

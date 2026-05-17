@@ -1,101 +1,162 @@
-import Image from "next/image";
+import { HeroSection } from '@/components/landing/HeroSection';
+import { DemoVideo } from '@/components/landing/DemoVideo';
+import { PricingSection } from '@/components/landing/PricingSection';
+import { Testimonials } from '@/components/landing/Testimonials';
+import { CTASection } from '@/components/landing/CTASection';
 
-export default function Home() {
+const APP_URL = process.env.APP_URL || 'https://slm.io.vn';
+
+export const metadata = {
+  title: 'LeadKit AI — Tìm khách hàng tiềm năng cho SME',
+  description:
+    'Tìm doanh nghiệp đang bỏ lỡ tiền, cho bạn lý do chính đáng để liên hệ ngay hôm nay. 5 leads miễn phí mỗi ngày.',
+  openGraph: {
+    title: 'LeadKit AI — Tìm khách hàng tiềm năng',
+    description: 'AI-powered lead intelligence cho freelancer và agency tại Việt Nam',
+    type: 'website',
+  },
+};
+
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'LeadKit AI',
+  url: APP_URL,
+  logo: `${APP_URL}/logo.png`,
+  description:
+    'AI-powered lead generation platform cho freelancer và SME tại Việt Nam. Tìm khách hàng tiềm năng từ Google Maps, phân tích pain points và tạo lợi chào bán hàng bằng AI.',
+  sameAs: [],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'customer support',
+    availableLanguage: ['Vietnamese'],
+  },
+};
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'LeadKit AI',
+  url: APP_URL,
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: `${APP_URL}/dashboard?search={search_term_string}`,
+    },
+    'query-input': 'required name=search_term_string',
+  },
+};
+
+const softwareSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'LeadKit AI',
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'Any',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'VND',
+  },
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: '4.8',
+    ratingCount: '128',
+  },
+  featureList: [
+    'Tìm leads từ Google Maps',
+    'Phân tích pain points doanh nghiệp',
+    'AI viết lợi chào bán hàng',
+    'Export CSV',
+    'Zalo deep link',
+  ],
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'LeadKit AI là gì?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'LeadKit AI là nền tảng tìm kiếm khách hàng tiềm năng bằng AI cho freelancer và doanh nghiệp SME tại Việt Nam. Hệ thống tự động tìm doanh nghiệp từ Google Maps, phân tích điểm yếu và tạo lợi chào bán hàng.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'LeadKit AI có miễn phí không?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Có, bạn được xem 5 leads miễn phí mỗi ngày và tạo 1 lead kit mỗi ngày. Nâng cấp Pro chỉ 149.000đ/tháng để có 500 leads/ngày và không giới hạn tính năng.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Dữ liệu leads từ đâu?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Dữ liệu được thu thập trực tiếp từ Google Maps với thông tin công khai như tên doanh nghiệp, địa chỉ, số điện thoại, website và đánh giá.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Làm sao để sử dụng LeadKit AI?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Bước 1: Đăng ký tài khoản. Bước 2: Nhập dịch vụ của bạn, ngành mục tiêu và địa điểm. Bước 3: Hệ thống AI sẽ tìm leads, phân tích pain points và tạo lợi chào. Bước 4: Liên hệ khách hàng qua Zalo hoặc điện thoại.',
+      },
+    },
+  ],
+};
+
+export default function HomePage() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+      <main>
+        <HeroSection />
+        <DemoVideo />
+        <PricingSection />
+        <Testimonials />
+        <CTASection />
+
+        {/* Footer */}
+        <footer className="bg-white border-t border-gray-200 py-12">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+              <div className="text-center md:text-left">
+                <p className="text-sm font-semibold text-gray-900">LeadKit AI</p>
+                <p className="text-xs text-gray-500 mt-1">Vietnam SME Lead Intelligence Kit</p>
+              </div>
+              <div className="flex gap-6 text-sm text-gray-500">
+                <a href="/privacy" className="hover:text-gray-900">Chính sách riêng tư</a>
+                <a href="/terms" className="hover:text-gray-900">Điều khoản</a>
+                <a href="/acceptable-use" className="hover:text-gray-900">Sử dụng hợp lệ</a>
+              </div>
+              <p className="text-xs text-gray-400">© 2024 LeadKit AI. Sử dụng hợp pháp, không spam.</p>
+            </div>
+          </div>
+        </footer>
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+    </>
   );
 }

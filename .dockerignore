@@ -1,0 +1,16 @@
+node_modules
+npm-debug.log
+.next
+.git
+.env
+.env.local
+.env.*.local
+*.md
+!.env.example
+coverage
+.nyc_output
+.DS_Store
+*.log
+/tmp
+.gosom/*.png
+.gosom/gosom

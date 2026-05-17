@@ -34,3 +34,36 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/src/generated/prisma
+
+# gosom scraper
+/gosom/gosom
+/gosom/*.png
+/gosom/gmapsdata/*
+/gosom/bin/*
+!/gosom/bin/.gitkeep
+.kimi/memory/agents.md
+.kimi/memory/plan.md
+.kimi/memory/progress.md
+.kimi/memory/tools.md
+scripts/test-fix.ts
+scripts/test-gosom-provider.ts
+scripts/test-mock-provider.ts
+scripts/test-mvp.ts
+scripts/test-phase1.ts
+scripts/test-phase2.ts
+scripts/test-phase3.ts
+scripts/test-places-api.js
+scripts/test-places-api.ps1
+scripts/test-ratelimit.ts
+.kimi/skills/leadkit-analysis/SKILL.md
+.kimi/skills/leadkit-code/SKILL.md
+.kimi/skills/leadkit-coordinator/SKILL.md
+.kimi/skills/leadkit-research/SKILL.md
+.kimi/skills/leadkit-tester/SKILL.md
+.kimi/skills/leadkit-tools/SKILL.md
+.env
+LeadKid_AI_plan.md
+leadkit_ai_final_implementation_blueprint_v1_2_postgresql_self_hosted.md
+LOCAL_DEVELOPMENT_GUIDE.md

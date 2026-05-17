@@ -1,0 +1,336 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                    String                @id @default(uuid())
+  email                 String                @unique
+  passwordHash          String                @map("password_hash")
+  fullName              String?               @map("full_name")
+  companyName           String?               @map("company_name")
+  role                  String                @default("user")
+  emailVerifiedAt       DateTime?             @map("email_verified_at") @db.Timestamptz(6)
+  createdAt             DateTime              @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt             DateTime              @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  accounts              Account[]
+  sessions              Session[]
+  leadKits              LeadKit[]
+  leads                 Lead[]
+  payments              Payment[]
+  usageLimits           UsageLimit[]
+  complianceConsents    ComplianceConsent[]
+  leadReports           LeadReport[]
+  jobs                  Job[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String   @id @default(uuid())
+  userId            String   @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String   @map("provider_account_id")
+  refreshToken      String?  @map("refresh_token")
+  accessToken       String?  @map("access_token")
+  expiresAt         Int?     @map("expires_at")
+  tokenType         String?  @map("token_type")
+  scope             String?
+  idToken           String?  @map("id_token")
+  sessionState      String?  @map("session_state")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id            String   @id @default(uuid())
+  userId        String   @map("user_id")
+  sessionToken  String   @unique @map("session_token")
+  expiresAt     DateTime @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expiresAt  DateTime @map("expires_at") @db.Timestamptz(6)
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model LeadKit {
+  id                  String    @id @default(uuid())
+  userId              String    @map("user_id")
+  title               String
+  serviceName         String    @map("service_name")
+  targetIndustry      String    @map("target_industry")
+  targetLocation      String    @map("target_location")
+  leadCount           Int       @map("lead_count")
+  status              String    @default("pending")
+  unlockStatus        String    @default("locked") @map("unlock_status")
+  priceVnd            Int?      @map("price_vnd")
+  totalLeads          Int       @default(0) @map("total_leads")
+  totalMobilePhones   Int       @default(0) @map("total_mobile_phones")
+  totalEmails         Int       @default(0) @map("total_emails")
+  averageScore        Int       @default(0) @map("average_score")
+  painSignalsSummary  Json      @default("[]") @map("pain_signals_summary")
+  createdAt           DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt           DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  leads   Lead[]
+  payments Payment[]
+  jobs    Job[]
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("lead_kits")
+}
+
+model Lead {
+  id                      String    @id @default(uuid())
+  leadKitId               String    @map("lead_kit_id")
+  userId                  String    @map("user_id")
+  placeId                 String?   @map("place_id")
+  companyName             String    @map("company_name")
+  formattedAddress        String?   @map("formatted_address")
+  phone                   String?
+  nationalPhoneNumber     String?   @map("national_phone_number")
+  internationalPhoneNumber String?  @map("international_phone_number")
+  websiteUrl              String?   @map("website_url")
+  googleMapsUri           String?   @map("google_maps_uri")
+  businessStatus          String?   @map("business_status")
+  types                   String[]
+  rating                  Decimal?  @db.Decimal(3, 2)
+  userRatingCount         Int?      @map("user_rating_count")
+  placeProvider           String?   @map("place_provider")
+  painSignals             Json      @default("[]") @map("pain_signals")
+  painSummary             String?   @map("pain_summary")
+  scriptText              String?   @map("script_text")
+  isViewed                Boolean   @default(false) @map("is_viewed")
+  isFreePreview           Boolean   @default(false) @map("is_free_preview")
+  scrapeCacheId           String?   @map("scrape_cache_id")
+  contactCacheId          String?   @map("contact_cache_id")
+  createdAt               DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  leadKit      LeadKit       @relation(fields: [leadKitId], references: [id], onDelete: Cascade)
+  leadReports  LeadReport[]
+
+  @@index([leadKitId])
+  @@index([userId, isViewed, createdAt])
+  @@map("leads")
+}
+
+model PlaceCache {
+  id                      String    @id @default(uuid())
+  placeId                 String    @unique @map("place_id")
+  provider                String?
+  displayName             String?   @map("display_name")
+  formattedAddress        String?   @map("formatted_address")
+  phone                   String?
+  nationalPhoneNumber     String?   @map("national_phone_number")
+  internationalPhoneNumber String?  @map("international_phone_number")
+  websiteUri              String?   @map("website_uri")
+  googleMapsUri           String?   @map("google_maps_uri")
+  latitude                Decimal?  @db.Decimal(10, 7)
+  longitude               Decimal?  @db.Decimal(10, 7)
+  businessStatus          String?   @map("business_status")
+  types                   String[]
+  rating                  Decimal?  @db.Decimal(3, 2)
+  userRatingCount         Int?      @map("user_rating_count")
+  rawData                 Json      @map("raw_data")
+  firstSeenAt             DateTime  @default(now()) @map("first_seen_at") @db.Timestamptz(6)
+  lastSeenAt              DateTime  @default(now()) @updatedAt @map("last_seen_at") @db.Timestamptz(6)
+  expiresAt               DateTime  @map("expires_at") @db.Timestamptz(6)
+  createdAt               DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([expiresAt])
+  @@index([provider, expiresAt])
+  @@map("place_cache")
+}
+
+model WebsiteHealthCache {
+  normalizedDomain  String    @id @map("normalized_domain")
+  status            String
+  finalUrl          String?   @map("final_url")
+  statusCode        Int?      @map("status_code")
+  checkedAt         DateTime  @default(now()) @map("checked_at") @db.Timestamptz(6)
+  expiresAt         DateTime  @map("expires_at") @db.Timestamptz(6)
+
+  @@index([expiresAt])
+  @@map("website_health_cache")
+}
+
+model DomainLock {
+  normalizedDomain  String    @id @map("normalized_domain")
+  status            String    @default("processing")
+  ownerJobId        String?   @map("owner_job_id")
+  errorMessage      String?   @map("error_message")
+  lockedAt          DateTime  @default(now()) @map("locked_at") @db.Timestamptz(6)
+  expiresAt         DateTime  @map("expires_at") @db.Timestamptz(6)
+
+  @@map("domain_locks")
+}
+
+model ScrapeCache {
+  id                String    @id @default(uuid())
+  normalizedDomain  String    @map("normalized_domain")
+  url               String
+  status            String
+  title             String?
+  finalUrl          String?   @map("final_url")
+  markdown          String?   @db.Text
+  html              String?   @db.Text
+  links             String[]
+  metadata          Json?
+  errorMessage      String?   @map("error_message")
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  expiresAt         DateTime  @map("expires_at") @db.Timestamptz(6)
+
+  @@index([normalizedDomain, expiresAt])
+  @@index([expiresAt])
+  @@map("scrape_cache")
+}
+
+model ContactCache {
+  id                String    @id @default(uuid())
+  normalizedDomain  String    @map("normalized_domain")
+  source            String
+  phones            String[]
+  emails            String[]
+  socialLinks       String[]  @map("social_links")
+  zaloLinks         String[]  @map("zalo_links")
+  facebookLinks     String[]  @map("facebook_links")
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  expiresAt         DateTime  @map("expires_at") @db.Timestamptz(6)
+
+  @@index([normalizedDomain, expiresAt])
+  @@index([expiresAt])
+  @@map("contact_cache")
+}
+
+model Job {
+  id                String    @id @default(uuid())
+  userId            String    @map("user_id")
+  leadKitId         String?   @map("lead_kit_id")
+  type              String
+  status            String    @default("pending")
+  lockedBy          String?   @map("locked_by")
+  lockedAt          DateTime? @map("locked_at") @db.Timestamptz(6)
+  leaseExpiresAt    DateTime? @map("lease_expires_at") @db.Timestamptz(6)
+  priority          Int       @default(0)
+  progressCurrent   Int       @default(0) @map("progress_current")
+  progressTotal     Int       @default(0) @map("progress_total")
+  currentStep       String?   @map("current_step")
+  payload           Json?
+  result            Json?
+  errorMessage      String?   @map("error_message")
+  startedAt         DateTime? @map("started_at") @db.Timestamptz(6)
+  completedAt       DateTime? @map("completed_at") @db.Timestamptz(6)
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  leadKit  LeadKit?  @relation(fields: [leadKitId], references: [id], onDelete: Cascade)
+  jobLogs  JobLog[]
+
+  @@index([status, leaseExpiresAt, priority(sort: Desc), createdAt])
+  @@map("jobs")
+}
+
+model JobLog {
+  id          String    @id @default(uuid())
+  jobId       String    @map("job_id")
+  level       String    @default("info")
+  message     String
+  metadata    Json?
+  sequence    Int
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  job Job @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([jobId, sequence])
+  @@map("job_logs")
+}
+
+model Payment {
+  id                  String    @id @default(uuid())
+  userId              String    @map("user_id")
+  leadKitId           String?   @map("lead_kit_id")
+  amountVnd           Int       @map("amount_vnd")
+  paymentType         String    @default("one_time") @map("payment_type")
+  status              String    @default("pending")
+  paymentProvider     String    @default("sepay") @map("payment_provider")
+  paymentCode         String    @unique @map("payment_code")
+  transferContent     String?   @map("transfer_content")
+  paidAmountVnd       Int       @default(0) @map("paid_amount_vnd")
+  remainingAmountVnd  Int?      @map("remaining_amount_vnd")
+  paidAt              DateTime? @map("paid_at") @db.Timestamptz(6)
+  expiresAt           DateTime? @map("expires_at") @db.Timestamptz(6)
+  providerPayload     Json?     @map("provider_payload")
+  createdAt           DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  leadKit  LeadKit?  @relation(fields: [leadKitId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([paymentCode])
+  @@map("payments")
+}
+
+model UsageLimit {
+  id          String    @id @default(uuid())
+  userId      String    @map("user_id")
+  usageType   String    @map("usage_type")
+  usageDate   DateTime  @map("usage_date") @db.Date
+  count       Int       @default(0)
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, usageType, usageDate])
+  @@map("usage_limits")
+}
+
+model ComplianceConsent {
+  id              String    @id @default(uuid())
+  userId          String    @map("user_id")
+  consentType     String    @map("consent_type")
+  consentVersion  String    @map("consent_version")
+  consentText     String    @map("consent_text")
+  ipHash          String?   @map("ip_hash")
+  acceptedAt      DateTime  @default(now()) @map("accepted_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("compliance_consents")
+}
+
+model LeadReport {
+  id            String    @id @default(uuid())
+  userId        String    @map("user_id")
+  leadId        String    @map("lead_id")
+  reportReasons Json      @map("report_reasons")
+  note          String?
+  status        String    @default("submitted")
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lead  Lead  @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@map("lead_reports")
+}
