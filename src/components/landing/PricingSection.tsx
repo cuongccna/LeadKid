@@ -6,36 +6,64 @@ const plans = [
     description: 'Dùng thử không giới hạn thởi gian',
     price: '0đ',
     period: '',
-    features: ['5 leads full data/ngày', 'Pain signals cơ bản', 'Xem SĐT không che', 'Không cần thẻ tín dụng'],
+    features: [
+      '1 lead full data/ngày',
+      'Xem preview 3 lead khác (mask contact)',
+      'Intent signals + Lead score',
+      'Không cần thẻ tín dụng',
+    ],
     cta: 'Đăng ký miễn phí',
     href: '/signup',
     highlighted: false,
   },
   {
-    name: 'Express Kit',
+    name: 'Starter Kit',
     description: 'Mua 1 lần, dùng ngay',
     price: '39.000đ',
-    period: '/50 leads',
-    features: ['50 leads instant', 'Pain signals đầy đủ', 'Export CSV', 'AI script template'],
-    cta: 'Mua ngay',
+    period: '/kit',
+    features: [
+      '1 kit 15-25 leads theo combo',
+      'Intent signals đầy đủ',
+      'AI script cá nhân hóa',
+      'Export CSV',
+      'SĐT xác thực',
+    ],
+    cta: 'Mua Starter Kit',
     href: '/signup',
     highlighted: false,
   },
   {
-    name: 'Pro',
-    description: 'Dành cho chuyên nghiệp',
+    name: 'Growth',
+    description: 'Dành cho freelancer chuyên nghiệp',
     price: '149.000đ',
     period: '/tháng',
     features: [
-      '500 leads/ngày',
-      'AI viết lợi chào (Gemini)',
+      '5 kit/tháng',
+      'AI script cá nhân hóa (Gemini)',
       'Export Google Sheets',
-      'Không giới hạn kit',
+      'Lead score + Sorting',
+      'Mini-CRM tracking',
       'Ưu tiên hỗ trợ',
     ],
-    cta: 'Nâng cấp Pro',
+    cta: 'Nâng cấp Growth',
     href: '/signup',
     highlighted: true,
+  },
+  {
+    name: 'Agency',
+    description: 'Dành cho agency & team',
+    price: '499.000đ',
+    period: '/tháng',
+    features: [
+      'Unlimited kits',
+      '3 team seats',
+      'API access',
+      'White-label option',
+      'Priority support',
+    ],
+    cta: 'Liên hệ Agency',
+    href: '/signup',
+    highlighted: false,
   },
 ];
 
@@ -46,16 +74,16 @@ export function PricingSection() {
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-base font-semibold leading-7 text-indigo-600">Bảng giá</h2>
           <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-            Đơn giản, rõ ràng, không ẩn phí
+            Không bán danh bạ. Bán cơ hội bán hàng.
           </p>
         </div>
-        <div className="mx-auto mt-16 grid max-w-lg grid-cols-1 gap-y-6 sm:mt-20 lg:max-w-4xl lg:grid-cols-3 lg:gap-x-8">
+        <div className="mx-auto mt-16 grid max-w-lg grid-cols-1 gap-y-6 sm:mt-20 lg:max-w-5xl lg:grid-cols-4 lg:gap-x-6">
           {plans.map((plan) => (
             <div
               key={plan.name}
               className={`rounded-3xl p-8 ring-1 ${
                 plan.highlighted
-                  ? 'bg-indigo-600 ring-indigo-600 text-white'
+                  ? 'bg-indigo-600 ring-indigo-600 text-white scale-105 shadow-xl'
                   : 'bg-white ring-gray-200'
               }`}
             >

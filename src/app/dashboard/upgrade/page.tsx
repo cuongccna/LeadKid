@@ -14,6 +14,7 @@ interface PaymentInfo {
   transferContent: string;
   bankAccount?: string;
   bankCode?: string;
+  bankName?: string;
   accountName?: string;
 }
 
@@ -121,7 +122,7 @@ export default function UpgradePage() {
               <h2 className="text-lg font-semibold text-gray-700 mb-2">Gói Free</h2>
               <p className="text-3xl font-bold text-gray-900 mb-4">0đ<span className="text-sm font-normal text-gray-600">/tháng</span></p>
               <ul className="space-y-3 text-sm text-gray-700">
-                <li className="flex items-center gap-2">✓ 5 leads miễn phí/ngày</li>
+                <li className="flex items-center gap-2">✓ 1 lead full data miễn phí/ngày</li>
                 <li className="flex items-center gap-2">✓ 1 kit/ngày</li>
                 <li className="flex items-center gap-2">✗ Không có AI viết lợi chào</li>
                 <li className="flex items-center gap-2">✗ Không export CSV</li>
@@ -182,7 +183,7 @@ export default function UpgradePage() {
             <div className="bg-gray-50 rounded-lg p-4 space-y-2 text-sm mb-6">
               <div className="flex justify-between">
                 <span className="text-gray-600">Ngân hàng:</span>
-                <span className="font-medium">{payment.bankCode || 'Vietcombank'}</span>
+                <span className="font-medium">{payment.bankName || payment.bankCode || 'Vietcombank'}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Số tài khoản:</span>

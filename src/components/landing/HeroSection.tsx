@@ -13,29 +13,49 @@ export function HeroSection() {
         />
       </div>
       <div className="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8">
-        <div className="mx-auto max-w-2xl text-center">
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+        <div className="mx-auto max-w-3xl text-center">
+          <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
             Tìm doanh nghiệp đang{' '}
-            <span className="text-indigo-600">bỏ lỡ tiền</span>
+            <span className="text-indigo-600">CHI TIỀN</span> cho marketing
+            <br className="hidden sm:block" />
+            nhưng bỏ lỡ khách vì không có website/booking tốt
           </h1>
           <p className="mt-6 text-lg leading-8 text-gray-700">
-            LeadKit AI giúp bạn tìm khách hàng tiềm năng có nhu cầu thực sự — và biết chính xác nên nói gì khi liên hệ.
+            LeadKit AI tìm doanh nghiệp đang chạy quảng cáo, đăng tuyển nhân sự — nhưng website chưa có form đặt lịch. 
+            Bạn nhận được SĐT xác thực, biết họ đang cần gì, và script tiếp cận viết riêng cho từng ngườ.
           </p>
+
+          {/* Trust badges */}
+          <div className="mt-8 flex flex-wrap justify-center gap-3 text-xs font-medium text-gray-600">
+            <span className="inline-flex items-center gap-1 bg-green-50 text-green-700 px-3 py-1.5 rounded-full">
+              ✅ SĐT đã xác thực
+            </span>
+            <span className="inline-flex items-center gap-1 bg-rose-50 text-rose-700 px-3 py-1.5 rounded-full">
+              🔥 Biết họ đang chạy quảng cáo
+            </span>
+            <span className="inline-flex items-center gap-1 bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-full">
+              💬 Script tiếp cận viết riêng
+            </span>
+            <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-700 px-3 py-1.5 rounded-full">
+              🛡️ Hoàn tiền nếu &gt;20% lead lỗi
+            </span>
+          </div>
+
           <div className="mt-10 flex items-center justify-center gap-x-6">
             <Link
               href="/signup"
-              className="rounded-md bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="rounded-md bg-indigo-600 px-8 py-4 text-base font-bold text-white shadow-lg hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition"
             >
-              Dùng thử miễn phí
+              🎁 XEM 1 LEAD MIỄN PHÍ
             </Link>
             <Link
               href="/login"
-              className="rounded-md bg-white px-6 py-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+              className="rounded-md bg-white px-6 py-4 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
             >
               Đăng nhập
             </Link>
           </div>
-          <p className="mt-4 text-xs text-gray-600">Không cần thẻ tín dụng · 5 leads miễn phí mỗi ngày</p>
+          <p className="mt-4 text-xs text-gray-500">Không cần thẻ tín dụng · 1 lead full data miễn phí mỗi ngày</p>
         </div>
       </div>
     </div>

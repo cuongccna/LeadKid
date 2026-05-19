@@ -9,7 +9,7 @@ const APP_URL = process.env.APP_URL || 'https://slm.io.vn';
 export const metadata = {
   title: 'LeadKit AI — Tìm khách hàng tiềm năng cho SME',
   description:
-    'Tìm doanh nghiệp đang bỏ lỡ tiền, cho bạn lý do chính đáng để liên hệ ngay hôm nay. 5 leads miễn phí mỗi ngày.',
+    'Tìm doanh nghiệp đang bỏ lỡ tiền, cho bạn lý do chính đáng để liên hệ ngay hôm nay. 1 lead full data miễn phí mỗi ngày.',
   openGraph: {
     title: 'LeadKit AI — Tìm khách hàng tiềm năng',
     description: 'AI-powered lead intelligence cho freelancer và agency tại Việt Nam',
@@ -90,7 +90,7 @@ const faqSchema = {
       name: 'LeadKit AI có miễn phí không?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Có, bạn được xem 5 leads miễn phí mỗi ngày và tạo 1 lead kit mỗi ngày. Nâng cấp Pro chỉ 149.000đ/tháng để có 500 leads/ngày và không giới hạn tính năng.',
+        text: 'Có, bạn được xem 1 lead full data miễn phí mỗi ngày và tạo 1 lead kit mỗi ngày. Nâng cấp Pro chỉ 149.000đ/tháng để có 500 leads/ngày và không giới hạn tính năng.',
       },
     },
     {

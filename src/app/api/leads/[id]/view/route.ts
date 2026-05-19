@@ -33,6 +33,8 @@ export async function POST(
       });
       return NextResponse.json({
         phone: lead.phone,
+        nationalPhoneNumber: lead.nationalPhoneNumber,
+        internationalPhoneNumber: lead.internationalPhoneNumber,
         scriptText: lead.scriptText,
         painSignals: lead.painSignals,
         painSummary: lead.painSummary,
@@ -72,6 +74,8 @@ export async function POST(
 
     return NextResponse.json({
       phone: lead.phone,
+      nationalPhoneNumber: lead.nationalPhoneNumber,
+      internationalPhoneNumber: lead.internationalPhoneNumber,
       scriptText: lead.scriptText,
       painSignals: lead.painSignals,
       painSummary: lead.painSummary,

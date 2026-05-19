@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/db';
 
-export const FREE_DAILY_LEAD_VIEWS = 5;
+export const FREE_DAILY_LEAD_VIEWS = 1;
 
 export async function getFreeLeadsRemaining(userId: string): Promise<number> {
   const today = new Date();

@@ -6,8 +6,9 @@ import { CompositePlacesProvider } from '@/lib/providers/places/composite-places
 import type { PlaceResult } from '@/lib/providers/places/provider';
 import { detectPainSignals, detectReviewPainSignals } from './pain-detector';
 import { checkWebsiteHealth } from './website-health-check';
-import { extractPhones, extractEmails, extractSocialLinks } from './contact-extractor';
+import { extractPhones, extractEmails, extractSocialLinks, normalizeVietnamPhone } from './contact-extractor';
 import { getAIProvider } from '@/lib/ai';
+import { detectIntent, calculateLeadScore } from '@/lib/intent';
 import { Prisma } from '@prisma/client';
 import { acquireDomainLock, releaseDomainLock, waitForCache } from '@/lib/cache/domain-lock';
 import { getScrapeCache, setScrapeCache, type ScrapeData } from '@/lib/cache/scrape-cache';
@@ -309,6 +310,20 @@ export async function processLeadKit(jobId: string, leadKitId: string) {
       }
     }
 
+    // --- Intent Detection ---
+    let intentResult = { signals: [] as Array<{ type: string; label: string; confidence?: number }>, summary: '', score: 0 };
+    try {
+      intentResult = await detectIntent({
+        companyName: place.displayName,
+        websiteUrl: place.websiteUri,
+        html,
+        rating: place.rating,
+        userRatingCount: place.userRatingCount,
+      });
+    } catch {
+      // Ignore intent detection errors
+    }
+
     // --- Pain Detection ---
     const pain = detectPainSignals({
       websiteUri: place.websiteUri,
@@ -329,7 +344,19 @@ export async function processLeadKit(jobId: string, leadKitId: string) {
       combinedPainSummary = reviewPain.summary;
     }
 
-    // --- Generate AI Script ---
+    // --- Lead Scoring ---
+    const social = html ? extractSocialLinks(html) : { zalo: null, facebook: null };
+    const scoreResult = calculateLeadScore({
+      intentSignals: intentResult.signals,
+      hasPhone: !!(place.phone || extraPhone),
+      hasZalo: !!social.zalo,
+      hasFacebook: !!social.facebook,
+      hasEmail: html ? extractEmails(html).length > 0 : false,
+      painSignals: pain.signals,
+      leadAgeDays: 0, // Fresh lead
+    });
+
+    // --- Generate AI Script (with intent context) ---
     let scriptText: string | null = null;
     try {
       scriptText = await aiProvider.generateScript({
@@ -340,6 +367,8 @@ export async function processLeadKit(jobId: string, leadKitId: string) {
         reviewInsight: reviewPain?.pitchAngle || null,
         rating: place.rating,
         userRatingCount: place.userRatingCount,
+        intentSignals: intentResult.signals,
+        intentSummary: intentResult.summary,
       });
     } catch {
       scriptText = `Chào anh/chị ${place.displayName}, em có gợi ý nhỏ giúp tiệm kinh doanh tốt hơn ạ.`;
@@ -353,7 +382,7 @@ export async function processLeadKit(jobId: string, leadKitId: string) {
         provider: place.provider || 'unknown',
         displayName: place.displayName,
         formattedAddress: place.formattedAddress,
-        phone: place.phone || extraPhone,
+        phone: place.phone || extraPhone || normalizeVietnamPhone(place.nationalPhoneNumber || '') || normalizeVietnamPhone(place.internationalPhoneNumber || ''),
         nationalPhoneNumber: place.nationalPhoneNumber,
         internationalPhoneNumber: place.internationalPhoneNumber,
         websiteUri: place.websiteUri,
@@ -374,7 +403,7 @@ export async function processLeadKit(jobId: string, leadKitId: string) {
         provider: place.provider || 'unknown',
         displayName: place.displayName,
         formattedAddress: place.formattedAddress,
-        phone: place.phone || extraPhone,
+        phone: place.phone || extraPhone || normalizeVietnamPhone(place.nationalPhoneNumber || '') || normalizeVietnamPhone(place.internationalPhoneNumber || ''),
         nationalPhoneNumber: place.nationalPhoneNumber,
         internationalPhoneNumber: place.internationalPhoneNumber,
         websiteUri: place.websiteUri,
@@ -402,7 +431,7 @@ export async function processLeadKit(jobId: string, leadKitId: string) {
         placeId: place.placeId,
         companyName: place.displayName,
         formattedAddress: place.formattedAddress,
-        phone: place.phone || extraPhone,
+        phone: place.phone || extraPhone || normalizeVietnamPhone(place.nationalPhoneNumber || '') || normalizeVietnamPhone(place.internationalPhoneNumber || ''),
         nationalPhoneNumber: place.nationalPhoneNumber,
         internationalPhoneNumber: place.internationalPhoneNumber,
         websiteUrl: place.websiteUri,
@@ -417,9 +446,13 @@ export async function processLeadKit(jobId: string, leadKitId: string) {
         painSignals: pain.signals,
         painSummary: pain.summary,
         scriptText,
-        isFreePreview: i < 5,
+        isFreePreview: i < 1,
         scrapeCacheId,
         contactCacheId,
+        intentSignals: intentResult.signals,
+        intentSummary: intentResult.summary,
+        leadScore: scoreResult.score,
+        leadScoreLabel: scoreResult.label,
       },
     });
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { PainSignalBadge } from '@/components/lead-kits/PainSignalBadge';
@@ -9,6 +9,12 @@ import { FreeLimitBanner } from '@/components/lead-kits/FreeLimitBanner';
 import { ScriptCopyButton } from '@/components/lead-kits/ScriptCopyButton';
 import { ZaloDeepLink } from '@/components/lead-kits/ZaloDeepLink';
 import { ExportButton } from '@/components/lead-kits/ExportButton';
+import { PhoneVerificationBadge } from '@/components/lead-kits/PhoneVerificationBadge';
+import { QualityGuarantee } from '@/components/lead-kits/QualityGuarantee';
+import { LeadScoreBadge } from '@/components/lead-kits/LeadScoreBadge';
+import { IntentSignalBadge } from '@/components/lead-kits/IntentSignalBadge';
+import { LeadStatusDropdown } from '@/components/lead-kits/LeadStatusDropdown';
+import { maskPhone, maskScript } from '@/lib/masking';
 import { showToast } from '@/components/ui/Toast';
 
 interface Lead {
@@ -16,6 +22,8 @@ interface Lead {
   companyName: string;
   formattedAddress: string | null;
   phone: string | null;
+  nationalPhoneNumber: string | null;
+  internationalPhoneNumber: string | null;
   websiteUrl: string | null;
   googleMapsUri: string | null;
   painSignals: string[];
@@ -28,6 +36,11 @@ interface Lead {
   reviewsLink: string | null;
   reviewsPerRating: Record<string, number> | null;
   businessStatus: string | null;
+  phoneVerificationStatus: string | null;
+  leadScore: number;
+  leadScoreLabel: string;
+  intentSignals: Array<{ type: string; label: string; confidence?: number }>;
+  intentSummary: string | null;
 }
 
 interface LeadKitDetail {
@@ -75,8 +88,24 @@ function formatAddress(raw: string | null): string {
   }
 }
 
-/* formatPhone helper — can be enabled when phone formatting is needed */
-// function formatPhone(phone: string | null): string { return phone || '—'; }
+function getBestPhone(
+  lead: Lead,
+  viewed?: { phone?: string | null; nationalPhoneNumber?: string | null; internationalPhoneNumber?: string | null }
+): string | null {
+  return (
+    viewed?.phone ||
+    lead.phone ||
+    viewed?.nationalPhoneNumber ||
+    lead.nationalPhoneNumber ||
+    viewed?.internationalPhoneNumber ||
+    lead.internationalPhoneNumber ||
+    null
+  );
+}
+
+function formatTelLink(phone: string): string {
+  return `tel:${phone.replace(/\s/g, '')}`;
+}
 
 function RatingStars({ rating, count }: { rating: string | null; count: number | null }) {
   if (!rating) return null;
@@ -183,26 +212,42 @@ export default function LeadKitDetailPage() {
   const id = params.id as string;
   const [kit, setKit] = useState<LeadKitDetail | null>(null);
   const [loading, setLoading] = useState(true);
-  const [freeRemaining, setFreeRemaining] = useState(5);
+  const [freeRemaining, setFreeRemaining] = useState(1);
   const [paymentModal, setPaymentModal] = useState<{
     paymentCode: string;
     amountVnd: number;
     qrUrl: string;
+    bankAccount?: string;
+    bankCode?: string;
+    bankName?: string;
+    accountName?: string;
   } | null>(null);
   const [viewedLeads, setViewedLeads] = useState<Record<string, {
     phone: string | null;
+    nationalPhoneNumber: string | null;
+    internationalPhoneNumber: string | null;
     scriptText: string | null;
     painSignals: string[];
     painSummary: string | null;
     freeLeadsRemaining?: number;
   }>>({});
   const [isPro, setIsPro] = useState(false);
+  const hasAutoViewedFree = useRef(false);
 
   useEffect(() => {
     fetchKit();
     fetchUsage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
+  // Auto-view free preview leads so phone/script show immediately
+  useEffect(() => {
+    if (!kit || hasAutoViewedFree.current) return;
+    hasAutoViewedFree.current = true;
+    const freeLeads = kit.leads.filter((l) => l.isFreePreview && !viewedLeads[l.id]);
+    freeLeads.forEach((lead) => handleViewLead(lead.id));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [kit]);
 
   async function fetchKit() {
     try {
@@ -352,6 +397,7 @@ export default function LeadKitDetailPage() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
         {!isUnlocked && !isPro && <FreeLimitBanner remaining={freeRemaining} />}
+        <QualityGuarantee />
 
         {/* Pain Signals Summary */}
         {kit.painSignalsSummary && kit.painSignalsSummary.length > 0 && (
@@ -402,7 +448,6 @@ export default function LeadKitDetailPage() {
           {kit.leads.map((lead) => {
             const viewed = viewedLeads[lead.id];
             const canView = isUnlocked || isPro || lead.isFreePreview;
-            const showData = viewed || canView;
             const addr = formatAddress(lead.formattedAddress);
 
             return (
@@ -430,9 +475,21 @@ export default function LeadKitDetailPage() {
                       </span>
                     )}
                   </div>
-                  <div className="mt-2">
+                  <div className="mt-2 flex items-center justify-between">
                     <PainSignalBadge signals={lead.painSignals} />
+                    <LeadStatusDropdown leadId={lead.id} />
                   </div>
+                  <div className="mt-1.5">
+                    <PhoneVerificationBadge status={lead.phoneVerificationStatus} />
+                  </div>
+                  <div className="mt-1.5">
+                    <LeadScoreBadge score={lead.leadScore} label={lead.leadScoreLabel} />
+                  </div>
+                  {lead.intentSignals && lead.intentSignals.length > 0 && (
+                    <div className="mt-1.5">
+                      <IntentSignalBadge signals={lead.intentSignals} />
+                    </div>
+                  )}
                 </div>
 
                 {/* Card Body */}
@@ -450,30 +507,39 @@ export default function LeadKitDetailPage() {
                   )}
 
                   {/* Số điện thoại */}
-                  {showData && viewed ? (
+                  {(viewed || lead.isFreePreview) ? (
                     <LeadInfoRow icon="📱" label="Số điện thoại">
-                      {viewed.phone ? (
-                        <a
-                          href={`tel:${viewed.phone.replace(/\s/g, '')}`}
-                          className="text-indigo-700 font-semibold hover:underline"
-                        >
-                          {viewed.phone}
-                        </a>
-                      ) : (
-                        <span className="text-gray-500 italic">Không có số điện thoại</span>
-                      )}
+                      {(() => {
+                        const bestPhone = getBestPhone(lead, viewed);
+                        return bestPhone ? (
+                          <a
+                            href={formatTelLink(bestPhone)}
+                            className="text-indigo-700 font-semibold hover:underline"
+                          >
+                            {bestPhone}
+                          </a>
+                        ) : (
+                          <span className="text-gray-500 italic">Không có số điện thoại</span>
+                        );
+                      })()}
                     </LeadInfoRow>
                   ) : (
                     <div className="flex items-start gap-2">
                       <span className="text-base mt-0.5 shrink-0">📱</span>
                       <div>
                         <p className="text-[11px] font-medium text-gray-600 uppercase tracking-wider">Số điện thoại</p>
-                        <button
-                          onClick={() => handleViewLead(lead.id)}
-                          className="text-sm text-indigo-600 font-medium mt-0.5 inline-flex items-center gap-1"
-                        >
-                          {canView ? '👆 Nhấn để xem SĐT' : '🔒 Mở khóa để xem SĐT'}
-                        </button>
+                        {lead.phone ? (
+                          <span className="text-sm text-gray-500 font-medium mt-0.5">
+                            {maskPhone(lead.phone)} <span className="text-xs text-orange-600">🔒 Mở khóa để xem</span>
+                          </span>
+                        ) : (
+                          <button
+                            onClick={() => handleViewLead(lead.id)}
+                            className="text-sm text-indigo-600 font-medium mt-0.5 inline-flex items-center gap-1"
+                          >
+                            {canView ? '👆 Nhấn để xem SĐT' : '🔒 Mở khóa để xem SĐT'}
+                          </button>
+                        )}
                       </div>
                     </div>
                   )}
@@ -510,27 +576,34 @@ export default function LeadKitDetailPage() {
                   )}
 
                   {/* Pain Summary */}
-                  {showData && viewed?.painSummary && (
+                  {(viewed || lead.isFreePreview) && (viewed?.painSummary || lead.painSummary) && (
                     <div className="bg-amber-50 border border-amber-100 rounded-lg p-3">
                       <p className="text-[11px] font-bold text-amber-700 uppercase tracking-wider mb-1">💡 Lý do nên liên hệ</p>
-                      <p className="text-sm text-amber-900">{viewed.painSummary}</p>
+                      <p className="text-sm text-amber-900">{viewed?.painSummary || lead.painSummary}</p>
                     </div>
                   )}
 
                   {/* Script AI */}
-                  {showData && viewed?.scriptText && (
-                    <div className="bg-indigo-50 border border-indigo-100 rounded-lg p-3">
-                      <p className="text-[11px] font-bold text-indigo-700 uppercase tracking-wider mb-1">💬 Lời chào gợi ý</p>
-                      <p className="text-sm text-indigo-900 italic leading-relaxed">&ldquo;{viewed.scriptText}&rdquo;</p>
+                  {(viewed || lead.isFreePreview) ? (
+                    (viewed?.scriptText || lead.scriptText) ? (
+                      <div className="bg-indigo-50 border border-indigo-100 rounded-lg p-3">
+                        <p className="text-[11px] font-bold text-indigo-700 uppercase tracking-wider mb-1">💬 Lờii chào gợi ý</p>
+                        <p className="text-sm text-indigo-900 italic leading-relaxed">&ldquo;{viewed?.scriptText || lead.scriptText}&rdquo;</p>
+                      </div>
+                    ) : null
+                  ) : lead.scriptText ? (
+                    <div className="bg-indigo-50/50 border border-indigo-100/50 rounded-lg p-3">
+                      <p className="text-[11px] font-bold text-indigo-600 uppercase tracking-wider mb-1">💬 Lờii chào gợi ý</p>
+                      <p className="text-sm text-indigo-800/60 italic leading-relaxed">&ldquo;{maskScript(lead.scriptText)}&rdquo;</p>
                     </div>
-                  )}
+                  ) : null}
                 </div>
 
                 {/* Card Actions */}
-                {showData && viewed && (
+                {(viewed || lead.isFreePreview) && (
                   <div className="px-4 pb-4 flex flex-wrap gap-2">
-                    <ScriptCopyButton script={viewed.scriptText} />
-                    <ZaloDeepLink phone={viewed.phone} script={viewed.scriptText} />
+                    <ScriptCopyButton script={viewed?.scriptText || lead.scriptText} />
+                    <ZaloDeepLink phone={getBestPhone(lead, viewed)} script={viewed?.scriptText || lead.scriptText || null} />
                     {lead.googleMapsUri && (
                       <ActionPill
                         icon="🗺️"
@@ -551,7 +624,6 @@ export default function LeadKitDetailPage() {
           {kit.leads.map((lead) => {
             const viewed = viewedLeads[lead.id];
             const canView = isUnlocked || isPro || lead.isFreePreview;
-            const showData = viewed || canView;
             const addr = formatAddress(lead.formattedAddress);
 
             return (
@@ -579,9 +651,21 @@ export default function LeadKitDetailPage() {
                       </span>
                     )}
                   </div>
-                  <div className="mt-2">
+                  <div className="mt-2 flex items-center justify-between">
                     <PainSignalBadge signals={lead.painSignals} />
+                    <LeadStatusDropdown leadId={lead.id} />
                   </div>
+                  <div className="mt-1.5">
+                    <PhoneVerificationBadge status={lead.phoneVerificationStatus} />
+                  </div>
+                  <div className="mt-1.5">
+                    <LeadScoreBadge score={lead.leadScore} label={lead.leadScoreLabel} />
+                  </div>
+                  {lead.intentSignals && lead.intentSignals.length > 0 && (
+                    <div className="mt-1.5">
+                      <IntentSignalBadge signals={lead.intentSignals} />
+                    </div>
+                  )}
                 </div>
 
                 {/* Body */}
@@ -590,18 +674,21 @@ export default function LeadKitDetailPage() {
                     <span className="line-clamp-2">{addr}</span>
                   </LeadInfoRow>
 
-                  {showData && viewed ? (
+                  {(viewed || lead.isFreePreview) ? (
                     <LeadInfoRow icon="📱" label="Số điện thoại">
-                      {viewed.phone ? (
-                        <a
-                          href={`tel:${viewed.phone.replace(/\s/g, '')}`}
-                          className="text-indigo-700 font-semibold hover:underline"
-                        >
-                          {viewed.phone}
-                        </a>
-                      ) : (
-                        <span className="text-gray-500 italic">Không có số điện thoại</span>
-                      )}
+                      {(() => {
+                        const bestPhone = getBestPhone(lead, viewed);
+                        return bestPhone ? (
+                          <a
+                            href={formatTelLink(bestPhone)}
+                            className="text-indigo-700 font-semibold hover:underline"
+                          >
+                            {bestPhone}
+                          </a>
+                        ) : (
+                          <span className="text-gray-500 italic">Không có số điện thoại</span>
+                        );
+                      })()}
                     </LeadInfoRow>
                   ) : (
                     <div className="flex items-start gap-2">
@@ -632,26 +719,33 @@ export default function LeadKitDetailPage() {
                     </LeadInfoRow>
                   )}
 
-                  {showData && viewed?.painSummary && (
+                  {(viewed || lead.isFreePreview) && (viewed?.painSummary || lead.painSummary) && (
                     <div className="bg-amber-50 border border-amber-100 rounded-lg p-3">
                       <p className="text-[11px] font-bold text-amber-700 uppercase tracking-wider mb-1">💡 Lý do nên liên hệ</p>
-                      <p className="text-sm text-amber-900">{viewed.painSummary}</p>
+                      <p className="text-sm text-amber-900">{viewed?.painSummary || lead.painSummary}</p>
                     </div>
                   )}
 
-                  {showData && viewed?.scriptText && (
-                    <div className="bg-indigo-50 border border-indigo-100 rounded-lg p-3">
-                      <p className="text-[11px] font-bold text-indigo-700 uppercase tracking-wider mb-1">💬 Lời chào gợi ý</p>
-                      <p className="text-sm text-indigo-900 italic leading-relaxed line-clamp-4">&ldquo;{viewed.scriptText}&rdquo;</p>
+                  {(viewed || lead.isFreePreview) ? (
+                    (viewed?.scriptText || lead.scriptText) ? (
+                      <div className="bg-indigo-50 border border-indigo-100 rounded-lg p-3">
+                        <p className="text-[11px] font-bold text-indigo-700 uppercase tracking-wider mb-1">💬 Lờii chào gợi ý</p>
+                        <p className="text-sm text-indigo-900 italic leading-relaxed line-clamp-4">&ldquo;{viewed?.scriptText || lead.scriptText}&rdquo;</p>
+                      </div>
+                    ) : null
+                  ) : lead.scriptText ? (
+                    <div className="bg-indigo-50/50 border border-indigo-100/50 rounded-lg p-3">
+                      <p className="text-[11px] font-bold text-indigo-600 uppercase tracking-wider mb-1">💬 Lờii chào gợi ý</p>
+                      <p className="text-sm text-indigo-800/60 italic leading-relaxed line-clamp-4">&ldquo;{maskScript(lead.scriptText)}&rdquo;</p>
                     </div>
-                  )}
+                  ) : null}
                 </div>
 
                 {/* Actions */}
-                {showData && viewed && (
+                {(viewed || lead.isFreePreview) && (
                   <div className="px-4 pb-4 flex flex-wrap gap-2">
-                    <ScriptCopyButton script={viewed.scriptText} />
-                    <ZaloDeepLink phone={viewed.phone} script={viewed.scriptText} />
+                    <ScriptCopyButton script={viewed?.scriptText || lead.scriptText} />
+                    <ZaloDeepLink phone={getBestPhone(lead, viewed)} script={viewed?.scriptText || lead.scriptText || null} />
                     {lead.googleMapsUri && (
                       <ActionPill icon="🗺️" label="Maps" variant="outline" href={lead.googleMapsUri} />
                     )}
@@ -668,6 +762,10 @@ export default function LeadKitDetailPage() {
           paymentCode={paymentModal.paymentCode}
           amountVnd={paymentModal.amountVnd}
           qrUrl={paymentModal.qrUrl}
+          bankAccount={paymentModal.bankAccount}
+          bankCode={paymentModal.bankCode}
+          bankName={paymentModal.bankName}
+          accountName={paymentModal.accountName}
           onClose={() => setPaymentModal(null)}
           onPaid={() => {
             setPaymentModal(null);

@@ -9,7 +9,7 @@ export function CTASection() {
             Bắt đầu tìm khách hàng ngay hôm nay
           </h2>
           <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-indigo-200">
-            5 leads miễn phí mỗi ngày. Không cần thẻ tín dụng. Không ràng buộc.
+            1 lead full data miễn phí mỗi ngày. Không cần thẻ tín dụng. Không ràng buộc.
           </p>
           <div className="mt-10 flex items-center justify-center gap-x-6">
             <Link

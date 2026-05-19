@@ -16,11 +16,21 @@ services:
       - REDIS_URL=redis://redis:6379
       - GOSOM_API_URL=http://gosom:8080
       - APP_URL=https://slm.io.vn
+      - FREE_DAILY_LEAD_VIEWS=1
     depends_on:
-      - postgres
-      - redis
-      - gosom
+      postgres:
+        condition: service_started
+      redis:
+        condition: service_started
+      gosom:
+        condition: service_started
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3002/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     networks:
       - leadkit-network
 
@@ -28,7 +38,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: ["npm", "run", "worker"]
+    entrypoint: ["sh", "-c"]
+    command: ["npx prisma migrate deploy && npm run worker"]
     env_file:
       - .env
     environment:
@@ -38,11 +49,21 @@ services:
       - GOSOM_API_URL=http://gosom:8080
       - WORKER_POLL_INTERVAL_MS=5000
       - JOB_LEASE_MINUTES=10
+      - FREE_DAILY_LEAD_VIEWS=1
     depends_on:
-      - postgres
-      - redis
-      - gosom
+      postgres:
+        condition: service_started
+      redis:
+        condition: service_started
+      gosom:
+        condition: service_started
     restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 5
+        window: 60s
     networks:
       - leadkit-network
 

@@ -7,6 +7,7 @@ Thông tin pain signal: {{pain_summary}}
 Dịch vụ đang bán: {{service_name}}
 Ngành: {{industry}}
 {{review_section}}
+{{intent_section}}
 
 QUY TẮC TUYỆT ĐỐI:
 1. Khen trước, không chỉ trích
@@ -15,6 +16,7 @@ QUY TẮC TUYỆT ĐỐI:
 4. CTA ít áp lực: "cho em góp ý", "em có gợi ý nhỏ"
 5. Sử dụng tiếng Việt có dấu, giọng điệu thân thiện
 6. Tối đa 120 ký tự (bao gồm cả dấu cách)
+7. Nếu có intent signal (họ đang tuyển dụng/chạy ads), ĐÁNH ĐỘNG đến điều đó để tạo sự liên quan
 
 VÍ DỤ TỐT:
 "Chào anh/chị {{company}}, em thấy tiệm trên Google, có gợi ý nhỏ giúp khách đặt lịch thuận tiện hơn ạ."
@@ -35,6 +37,8 @@ export function buildPrompt(params: {
   reviewInsight?: string | null;
   rating?: number | null;
   userRatingCount?: number | null;
+  intentSignals?: Array<{ type: string; label: string; confidence?: number }>;
+  intentSummary?: string;
 }): string {
   let reviewSection = '';
   if (params.reviewInsight) {
@@ -44,10 +48,16 @@ export function buildPrompt(params: {
     }
   }
 
+  let intentSection = '';
+  if (params.intentSignals && params.intentSignals.length > 0) {
+    intentSection = `\nDấu hiệu nhu cầu (intent signals): ${params.intentSummary || params.intentSignals.map((s) => s.label).join(', ')}`;
+  }
+
   return SCRIPT_PROMPT_TEMPLATE
     .replace(/\{\{company_name\}\}/g, params.companyName)
     .replace(/\{\{company\}\}/g, params.companyName)
     .replace(/\{\{pain_summary\}\}/g, params.painSummary || 'chưa có thông tin cụ thể')
     .replace(/\{\{service_name\}\}/g, params.serviceName)
-    .replace(/\{\{review_section\}\}/g, reviewSection);
+    .replace(/\{\{review_section\}\}/g, reviewSection)
+    .replace(/\{\{intent_section\}\}/g, intentSection);
 }

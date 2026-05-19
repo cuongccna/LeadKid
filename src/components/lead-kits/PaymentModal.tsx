@@ -8,6 +8,7 @@ interface PaymentModalProps {
   qrUrl: string;
   bankAccount?: string;
   bankCode?: string;
+  bankName?: string;
   accountName?: string;
   onClose: () => void;
   onPaid: () => void;
@@ -19,6 +20,7 @@ export function PaymentModal({
   qrUrl,
   bankAccount,
   bankCode,
+  bankName,
   accountName,
   onClose,
   onPaid,
@@ -63,7 +65,7 @@ export function PaymentModal({
           <div className="bg-gray-50 rounded-lg p-4 space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-gray-600">Ngân hàng:</span>
-              <span className="font-medium">{bankCode || 'Vietcombank'}</span>
+              <span className="font-medium">{bankName || bankCode || 'Vietcombank'}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Số tài khoản:</span>

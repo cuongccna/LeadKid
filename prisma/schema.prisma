@@ -27,6 +27,7 @@ model User {
   usageLimits           UsageLimit[]
   complianceConsents    ComplianceConsent[]
   leadReports           LeadReport[]
+  leadStatuses          LeadStatus[]
   jobs                  Job[]
 
   @@map("users")
@@ -128,12 +129,24 @@ model Lead {
   contactCacheId          String?   @map("contact_cache_id")
   createdAt               DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
 
+  // Monetization V1.2 — Intent + Quality
+  phoneVerificationStatus String    @default("unverified") @map("phone_verification_status")
+  intentSignals           Json      @default("[]") @map("intent_signals")
+  intentSummary           String?   @map("intent_summary")
+  leadScore               Int       @default(0) @map("lead_score")
+  leadScoreLabel          String    @default("medium") @map("lead_score_label")
+  zaloVerified            Boolean   @default(false) @map("zalo_verified")
+  facebookPageUrl         String?   @map("facebook_page_url")
+
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   leadKit      LeadKit       @relation(fields: [leadKitId], references: [id], onDelete: Cascade)
   leadReports  LeadReport[]
+  leadStatuses LeadStatus[]
 
   @@index([leadKitId])
   @@index([userId, isViewed, createdAt])
+  @@index([phoneVerificationStatus])
+  @@index([leadScoreLabel])
   @@map("leads")
 }
 
@@ -338,4 +351,56 @@ model LeadReport {
   lead  Lead  @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
   @@map("lead_reports")
+}
+
+// ─── Monetization V1.2 — Mini-CRM ───
+
+model LeadStatus {
+  id          String    @id @default(uuid())
+  userId      String    @map("user_id")
+  leadId      String    @map("lead_id")
+  status      String    @default("not_contacted") @map("status")
+  note        String?
+  contactedAt DateTime? @map("contacted_at") @db.Timestamptz(6)
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, leadId])
+  @@index([userId, status])
+  @@map("lead_status")
+}
+
+// ─── Monetization V1.2 — Social Proof ───
+
+model KitStats {
+  id                  String    @id @default(uuid())
+  targetIndustry      String    @map("target_industry")
+  targetLocation      String    @map("target_location")
+  totalPurchases      Int       @default(0) @map("total_purchases")
+  totalLeadsGenerated Int       @default(0) @map("total_leads_generated")
+  avgConversionRate   Decimal?  @db.Decimal(5, 2) @map("avg_conversion_rate")
+  topTestimonial      String?   @map("top_testimonial")
+  updatedAt           DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([targetIndustry, targetLocation])
+  @@map("kit_stats")
+}
+
+// ─── Monetization V1.2 — Intent Cache ───
+
+model IntentCache {
+  id               String    @id @default(uuid())
+  normalizedDomain String    @unique @map("normalized_domain")
+  placeId          String?   @map("place_id")
+  signals          Json      @default("[]")
+  summary          String?
+  checkedAt        DateTime  @default(now()) @map("checked_at") @db.Timestamptz(6)
+  expiresAt        DateTime  @map("expires_at") @db.Timestamptz(6)
+
+  @@index([normalizedDomain, expiresAt])
+  @@index([expiresAt])
+  @@map("intent_cache")
 }

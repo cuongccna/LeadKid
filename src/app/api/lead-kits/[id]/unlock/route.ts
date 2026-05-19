@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/db';
 import { calculatePrice, generatePaymentCode } from '@/lib/payments/pricing';
 import { getBankQRUrl } from '@/lib/payments/vietqr';
+import { getVietQrBin, getBankName } from '@/lib/payments/bank-mapping';
 
 export const dynamic = 'force-dynamic';
 
@@ -44,8 +45,12 @@ export async function POST(
       },
     });
 
+    const citadCode = process.env.SEPAY_BANK_CODE || '970436';
+    const vietQrBin = getVietQrBin(citadCode);
+    const bankName = getBankName(citadCode);
+
     const qrUrl = getBankQRUrl({
-      bankCode: process.env.SEPAY_BANK_CODE || '970436', // Default Vietcombank
+      bankCode: vietQrBin,
       accountNumber: process.env.SEPAY_BANK_ACCOUNT || '0000000000',
       amount,
       description: paymentCode,
@@ -60,6 +65,7 @@ export async function POST(
       transferContent: paymentCode,
       bankAccount: process.env.SEPAY_BANK_ACCOUNT,
       bankCode: process.env.SEPAY_BANK_CODE,
+      bankName,
       accountName: process.env.SEPAY_ACCOUNT_NAME,
     });
   } catch (error) {

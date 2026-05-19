@@ -42,14 +42,25 @@ export async function POST(
       },
     });
 
+    // Update phone verification status if wrong_phone reported
+    if (data.reasons.includes('wrong_phone') || data.reasons.includes('Sai số điện thoại')) {
+      await prisma.lead.update({
+        where: { id: lead.id },
+        data: { phoneVerificationStatus: 'reported_bad' },
+      });
+    }
+
     // Check if >= 2 reports for same phone, auto-suppress
     const reportCount = await prisma.leadReport.count({
       where: { lead: { phone: lead.phone } },
     });
 
     if (reportCount >= 2 && lead.phone) {
-      // Could add to suppression list here
-      console.log(`Phone ${lead.phone} has ${reportCount} reports, should be suppressed`);
+      // Auto-mark as reported_bad if 2+ reports
+      await prisma.lead.updateMany({
+        where: { phone: lead.phone },
+        data: { phoneVerificationStatus: 'reported_bad' },
+      });
     }
 
     return NextResponse.json({ success: true, message: 'Báo cáo đã được gửi' });

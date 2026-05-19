@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     template: '%s — LeadKit AI',
   },
   description:
-    'LeadKit AI giúp freelancer và agency tìm khách hàng tiềm năng từ Google Maps, phân tích điểm yếu doanh nghiệp và tạo lợi chào bán hàng bằng AI. 5 leads miễn phí mỗi ngày.',
+    'LeadKit AI giúp freelancer và agency tìm khách hàng tiềm năng từ Google Maps, phân tích điểm yếu doanh nghiệp và tạo lợi chào bán hàng bằng AI. 1 lead full data miễn phí mỗi ngày.',
   keywords: [
     'lead generation',
     'tìm khách hàng tiềm năng',

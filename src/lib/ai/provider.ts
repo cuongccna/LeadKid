@@ -6,6 +6,8 @@ export interface AIScriptParams {
   reviewInsight?: string | null;
   rating?: number | null;
   userRatingCount?: number | null;
+  intentSignals?: Array<{ type: string; label: string; confidence?: number }>;
+  intentSummary?: string;
 }
 
 export interface AIProvider {
